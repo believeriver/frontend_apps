@@ -191,6 +191,28 @@ button { font-family: inherit; }
   color: #fff;
   font-weight: 600;
 }
+.range-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.range-btn.loading { min-width: 56px; }
+
+.btn-spinner {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+.chart-loading {
+  height: 340px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
 
 .chart-tooltip {
   background: #1e242cee;

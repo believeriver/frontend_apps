@@ -13,8 +13,10 @@ export const fetchCompanyList = async (): Promise<CompanyListItem[]> => {
   return data;
 };
 
-export const fetchStockHistory = async (code: string): Promise<StockPoint[]> => {
-  const { data } = await client.get<StockPoint[]>(`/stock/${code}/`);
+/** start: 'YYYY-MM-DD' を渡すとその日以降のデータを取得。省略時はAPI側デフォルト（6ヶ月） */
+export const fetchStockHistory = async (code: string, start?: string): Promise<StockPoint[]> => {
+  const params = start ? { start } : {};
+  const { data } = await client.get<StockPoint[]>(`/stock/${code}/`, { params });
   return data;
 };
 

@@ -1,3 +1,14 @@
+// GET /api_market/companies/  (一覧)
+export interface CompanyListItem {
+  code: string;
+  name: string;
+  stock: string;           // "59,100"
+  dividend: number | null;
+  dividend_rank: number | null;
+  dividend_update: string | null;
+  information: string | null;
+}
+
 // GET /api_market/stock/<code>/
 export interface StockPoint {
   year: string;   // ISO datetime "2025-10-03T00:00:00"

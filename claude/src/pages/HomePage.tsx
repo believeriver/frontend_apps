@@ -1,65 +1,195 @@
-import { useState, FormEvent } from 'react';
+import { useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '../store';
+import {
+  loadCompanyList,
+  setSearch,
+  toggleSort,
+  setPage,
+  applyFilter,
+  applySort,
+  paginate,
+  PAGE_SIZE_EXPORT as PAGE_SIZE,
+  SortKey,
+} from '../store/companyListSlice';
 
-const EXAMPLES = ['8963', '7203', '9984', '6758', '9433'];
+function parsePrice(s: string): number {
+  return parseFloat(s.replace(/,/g, '')) || 0;
+}
 
 export default function HomePage() {
-  const [query, setQuery] = useState('');
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const { items, loading, error, search, sortKey, sortDir, page } = useSelector(
+    (s: RootState) => s.companyList
+  );
 
-  const go = (code: string) => navigate(`/stock/${code}`);
+  useEffect(() => {
+    if (items.length === 0) dispatch(loadCompanyList());
+  }, [dispatch, items.length]);
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    const code = query.trim();
-    if (code) go(code);
+  const filtered = useMemo(() => applyFilter(items, search), [items, search]);
+  const sorted   = useMemo(() => applySort(filtered, sortKey, sortDir), [filtered, sortKey, sortDir]);
+  const paged    = useMemo(() => paginate(sorted, page), [sorted, page]);
+  const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
+
+  const handleSort = useCallback((key: SortKey) => dispatch(toggleSort(key)), [dispatch]);
+
+  const SortIcon = ({ col }: { col: SortKey }) => {
+    if (sortKey !== col) return <span className="sort-icon muted">↕</span>;
+    return <span className="sort-icon active">{sortDir === 'asc' ? '↑' : '↓'}</span>;
   };
 
+  if (loading) {
+    return (
+      <div className="page-center">
+        <div className="spinner" />
+        <p className="loading-text">銘柄一覧を読み込み中... (3,000件超)</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="page-center">
+        <div className="error-box">
+          <p className="error-title">取得エラー</p>
+          <p className="error-msg">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="home-page">
-      <div className="home-hero">
-        <h1 className="home-title">IR 情報ダッシュボード</h1>
-        <p className="home-subtitle">銘柄コードを入力して株価・財務情報を確認できます</p>
-
-        <form onSubmit={handleSubmit} className="home-search-form">
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="銘柄コードを入力 (例: 8963)"
-            className="home-search-input"
-            autoFocus
-          />
-          <button type="submit" className="home-search-btn">検索</button>
-        </form>
-
-        <div className="example-links">
-          <span className="example-label">例：</span>
-          {EXAMPLES.map((code) => (
-            <button key={code} className="example-btn" onClick={() => go(code)}>
-              {code}
-            </button>
-          ))}
+    <div className="home-page-list">
+      {/* ヘッダー */}
+      <div className="list-header">
+        <div>
+          <h1 className="list-title">配当利回りランキング</h1>
+          <p className="list-subtitle">
+            {search
+              ? `「${search}」の検索結果 ${sorted.length.toLocaleString()} 件`
+              : `全 ${items.length.toLocaleString()} 銘柄`}
+          </p>
         </div>
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => dispatch(setSearch(e.target.value))}
+          placeholder="企業名・コードで検索..."
+          className="list-search"
+          autoFocus
+        />
       </div>
 
-      <div className="home-features">
-        <div className="feature-card">
-          <div className="feature-icon">📈</div>
-          <h3>株価チャート</h3>
-          <p>インタラクティブなチャートで株価の推移を確認</p>
-        </div>
-        <div className="feature-card">
-          <div className="feature-icon">📊</div>
-          <h3>業績グラフ</h3>
-          <p>売上高・営業利益・純利益の棒グラフ</p>
-        </div>
-        <div className="feature-card">
-          <div className="feature-icon">📋</div>
-          <h3>財務データ</h3>
-          <p>ROE・ROA・EPS などの指標一覧</p>
-        </div>
+      {/* テーブル */}
+      <div className="list-table-wrap">
+        <table className="list-table">
+          <thead>
+            <tr>
+              {(
+                [
+                  ['dividend_rank', 'ランク'],
+                  ['code',          'コード'],
+                  ['name',          '企業名'],
+                  ['stock',         '株価 (円)'],
+                  ['dividend',      '配当利回り'],
+                ] as [SortKey, string][]
+              ).map(([key, label]) => (
+                <th
+                  key={key}
+                  onClick={() => handleSort(key)}
+                  className={`sortable ${key === 'name' ? 'col-name' : ''}`}
+                >
+                  {label} <SortIcon col={key} />
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {paged.map((c) => {
+              const price = parsePrice(c.stock);
+              return (
+                <tr key={c.code} className="list-row" onClick={() => navigate(`/stock/${c.code}`)}>
+                  <td className="td-rank">
+                    {c.dividend_rank != null ? (
+                      <span className={`rank-badge rank-${Math.ceil((c.dividend_rank) / 500)}`}>
+                        {c.dividend_rank}
+                      </span>
+                    ) : '—'}
+                  </td>
+                  <td className="td-code">{c.code}</td>
+                  <td className="td-name">{c.name}</td>
+                  <td className="td-price">{price.toLocaleString('ja-JP')}</td>
+                  <td className="td-dividend">
+                    {c.dividend != null ? (
+                      <span className={`dividend-badge ${c.dividend >= 5 ? 'high' : c.dividend >= 3 ? 'mid' : 'low'}`}>
+                        {c.dividend.toFixed(2)}%
+                      </span>
+                    ) : '—'}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
+
+      {/* ページネーション */}
+      {totalPages > 1 && (
+        <div className="pagination">
+          <button
+            className="page-btn"
+            disabled={page === 1}
+            onClick={() => dispatch(setPage(1))}
+          >«</button>
+          <button
+            className="page-btn"
+            disabled={page === 1}
+            onClick={() => dispatch(setPage(page - 1))}
+          >‹</button>
+
+          {Array.from({ length: Math.min(7, totalPages) }, (_, i) => {
+            let p: number;
+            if (totalPages <= 7) {
+              p = i + 1;
+            } else if (page <= 4) {
+              p = i + 1;
+            } else if (page >= totalPages - 3) {
+              p = totalPages - 6 + i;
+            } else {
+              p = page - 3 + i;
+            }
+            return (
+              <button
+                key={p}
+                className={`page-btn ${p === page ? 'active' : ''}`}
+                onClick={() => dispatch(setPage(p))}
+              >
+                {p}
+              </button>
+            );
+          })}
+
+          <button
+            className="page-btn"
+            disabled={page === totalPages}
+            onClick={() => dispatch(setPage(page + 1))}
+          >›</button>
+          <button
+            className="page-btn"
+            disabled={page === totalPages}
+            onClick={() => dispatch(setPage(totalPages))}
+          >»</button>
+
+          <span className="page-info">
+            {((page - 1) * PAGE_SIZE + 1).toLocaleString()}–
+            {Math.min(page * PAGE_SIZE, sorted.length).toLocaleString()} /
+            {sorted.length.toLocaleString()} 件
+          </span>
+        </div>
+      )}
     </div>
   );
 }

@@ -28,6 +28,15 @@ export interface FinancialRecord {
   payout_ratio: number | null;           // %
 }
 
+export interface CompanyInformation {
+  industry: string | null;
+  description: string | null;
+  per: number | null;
+  psr: number | null;
+  pbr: number | null;
+  updated_at: string | null;
+}
+
 export interface CompanyData {
   code: string;
   name: string;
@@ -35,7 +44,7 @@ export interface CompanyData {
   dividend: number | null; // 配当利回り %
   dividend_rank: number | null;
   dividend_update: string | null;
-  information: string | null;
+  information: CompanyInformation | null;
   financials: FinancialRecord[];
 }
 

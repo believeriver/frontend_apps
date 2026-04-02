@@ -77,10 +77,10 @@ export default function StockPage() {
         </>
       )}
 
-      {company.information && (
+      {company.information?.description && (
         <section className="section">
-          <h2 className="section-title">企業情報</h2>
-          <p className="description">{company.information}</p>
+          <h2 className="section-title">企業概要</h2>
+          <p className="description">{company.information.description}</p>
         </section>
       )}
     </div>

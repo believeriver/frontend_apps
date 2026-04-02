@@ -18,6 +18,27 @@ function parsePrice(s: string): number {
   return parseFloat(s.replace(/,/g, '')) || 0;
 }
 
+function fmtRatio(v: number | null | undefined): string {
+  if (v == null || v === 0) return '—';
+  return `${v.toFixed(2)}`;
+}
+
+function truncate(s: string | null | undefined, len = 40): string {
+  if (!s) return '—';
+  return s.length <= len ? s : s.slice(0, len) + '…';
+}
+
+// ソート可能な列定義
+const COLUMNS: { key: SortKey; label: string; align?: 'left' }[] = [
+  { key: 'dividend_rank', label: 'ランク' },
+  { key: 'code',          label: 'コード' },
+  { key: 'name',          label: '企業名',   align: 'left' },
+  { key: 'stock',         label: '株価 (円)' },
+  { key: 'dividend',      label: '配当利回り' },
+  { key: 'per',           label: 'PER (倍)' },
+  { key: 'pbr',           label: 'PBR (倍)' },
+];
+
 export default function HomePage() {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
@@ -29,9 +50,9 @@ export default function HomePage() {
     if (items.length === 0) dispatch(loadCompanyList());
   }, [dispatch, items.length]);
 
-  const filtered = useMemo(() => applyFilter(items, search), [items, search]);
-  const sorted   = useMemo(() => applySort(filtered, sortKey, sortDir), [filtered, sortKey, sortDir]);
-  const paged    = useMemo(() => paginate(sorted, page), [sorted, page]);
+  const filtered   = useMemo(() => applyFilter(items, search),           [items, search]);
+  const sorted     = useMemo(() => applySort(filtered, sortKey, sortDir), [filtered, sortKey, sortDir]);
+  const paged      = useMemo(() => paginate(sorted, page),               [sorted, page]);
   const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
 
   const handleSort = useCallback((key: SortKey) => dispatch(toggleSort(key)), [dispatch]);
@@ -88,33 +109,29 @@ export default function HomePage() {
         <table className="list-table">
           <thead>
             <tr>
-              {(
-                [
-                  ['dividend_rank', 'ランク'],
-                  ['code',          'コード'],
-                  ['name',          '企業名'],
-                  ['stock',         '株価 (円)'],
-                  ['dividend',      '配当利回り'],
-                ] as [SortKey, string][]
-              ).map(([key, label]) => (
+              {COLUMNS.map(({ key, label, align }) => (
                 <th
                   key={key}
                   onClick={() => handleSort(key)}
-                  className={`sortable ${key === 'name' ? 'col-name' : ''}`}
+                  className={`sortable${align === 'left' ? ' col-name' : ''}`}
                 >
                   {label} <SortIcon col={key} />
                 </th>
               ))}
+              {/* ソート不可の固定列 */}
+              <th className="col-industry">業種</th>
+              <th className="col-desc">企業説明</th>
             </tr>
           </thead>
           <tbody>
             {paged.map((c) => {
               const price = parsePrice(c.stock);
+              const info  = c.information;
               return (
                 <tr key={c.code} className="list-row" onClick={() => navigate(`/stock/${c.code}`)}>
                   <td className="td-rank">
                     {c.dividend_rank != null ? (
-                      <span className={`rank-badge rank-${Math.ceil((c.dividend_rank) / 500)}`}>
+                      <span className={`rank-badge rank-${Math.ceil(c.dividend_rank / 500)}`}>
                         {c.dividend_rank}
                       </span>
                     ) : '—'}
@@ -129,6 +146,14 @@ export default function HomePage() {
                       </span>
                     ) : '—'}
                   </td>
+                  <td className="td-ratio">{fmtRatio(info?.per)}</td>
+                  <td className="td-ratio">{fmtRatio(info?.pbr)}</td>
+                  <td className="td-industry">
+                    {info?.industry
+                      ? <span className="industry-tag">{info.industry}</span>
+                      : '—'}
+                  </td>
+                  <td className="td-desc">{truncate(info?.description)}</td>
                 </tr>
               );
             })}
@@ -139,49 +164,24 @@ export default function HomePage() {
       {/* ページネーション */}
       {totalPages > 1 && (
         <div className="pagination">
-          <button
-            className="page-btn"
-            disabled={page === 1}
-            onClick={() => dispatch(setPage(1))}
-          >«</button>
-          <button
-            className="page-btn"
-            disabled={page === 1}
-            onClick={() => dispatch(setPage(page - 1))}
-          >‹</button>
+          <button className="page-btn" disabled={page === 1} onClick={() => dispatch(setPage(1))}>«</button>
+          <button className="page-btn" disabled={page === 1} onClick={() => dispatch(setPage(page - 1))}>‹</button>
 
           {Array.from({ length: Math.min(7, totalPages) }, (_, i) => {
             let p: number;
-            if (totalPages <= 7) {
-              p = i + 1;
-            } else if (page <= 4) {
-              p = i + 1;
-            } else if (page >= totalPages - 3) {
-              p = totalPages - 6 + i;
-            } else {
-              p = page - 3 + i;
-            }
+            if      (totalPages <= 7)       p = i + 1;
+            else if (page <= 4)             p = i + 1;
+            else if (page >= totalPages - 3) p = totalPages - 6 + i;
+            else                             p = page - 3 + i;
             return (
-              <button
-                key={p}
-                className={`page-btn ${p === page ? 'active' : ''}`}
-                onClick={() => dispatch(setPage(p))}
-              >
+              <button key={p} className={`page-btn ${p === page ? 'active' : ''}`} onClick={() => dispatch(setPage(p))}>
                 {p}
               </button>
             );
           })}
 
-          <button
-            className="page-btn"
-            disabled={page === totalPages}
-            onClick={() => dispatch(setPage(page + 1))}
-          >›</button>
-          <button
-            className="page-btn"
-            disabled={page === totalPages}
-            onClick={() => dispatch(setPage(totalPages))}
-          >»</button>
+          <button className="page-btn" disabled={page === totalPages} onClick={() => dispatch(setPage(page + 1))}>›</button>
+          <button className="page-btn" disabled={page === totalPages} onClick={() => dispatch(setPage(totalPages))}>»</button>
 
           <span className="page-info">
             {((page - 1) * PAGE_SIZE + 1).toLocaleString()}–

@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { fetchCompanyList } from '../api/api';
 import { CompanyListItem } from '../types';
 
-export type SortKey = 'dividend' | 'dividend_rank' | 'code' | 'name' | 'stock';
+export type SortKey = 'dividend' | 'dividend_rank' | 'code' | 'name' | 'stock' | 'per' | 'pbr';
 export type SortDir = 'asc' | 'desc';
 
 interface CompanyListState {
@@ -57,6 +57,8 @@ export function applySort(
       case 'stock':         av = parsePrice(a.stock); bv = parsePrice(b.stock); break;
       case 'code':          av = a.code; bv = b.code; break;
       case 'name':          av = a.name; bv = b.name; break;
+      case 'per':           av = a.information?.per ?? Infinity; bv = b.information?.per ?? Infinity; break;
+      case 'pbr':           av = a.information?.pbr ?? Infinity; bv = b.information?.pbr ?? Infinity; break;
       default:              return 0;
     }
     if (av < bv) return dir === 'asc' ? -1 : 1;
@@ -90,7 +92,7 @@ const companyListSlice = createSlice({
         state.sortDir = state.sortDir === 'asc' ? 'desc' : 'asc';
       } else {
         state.sortKey = action.payload;
-        state.sortDir = action.payload === 'dividend' ? 'desc' : 'asc';
+        state.sortDir = (action.payload === 'dividend') ? 'desc' : 'asc';
       }
       state.page = 1;
     },

@@ -502,22 +502,23 @@ button { font-family: inherit; }
   gap: 16px;
 }
 .pie-chart-area {
-  flex: 0 0 300px;
+  flex: 0 0 360px;
 }
 .pie-legend {
   flex: 1;
-  max-height: 280px;
+  max-height: 340px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   padding-right: 4px;
 }
 .pie-legend-item {
-  display: flex;
+  display: grid;
+  grid-template-columns: 12px 1fr 46px;
   align-items: center;
-  gap: 8px;
-  padding: 4px 6px;
+  gap: 6px;
+  padding: 4px 8px;
   border-radius: 4px;
   cursor: default;
   transition: background 0.15s;
@@ -530,10 +531,8 @@ button { font-family: inherit; }
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  flex-shrink: 0;
 }
 .pie-legend-name {
-  flex: 1;
   font-size: 0.8rem;
   color: var(--text-dim);
   white-space: nowrap;
@@ -541,10 +540,11 @@ button { font-family: inherit; }
   text-overflow: ellipsis;
 }
 .pie-legend-pct {
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: var(--text-main);
   font-weight: 600;
   white-space: nowrap;
+  text-align: right;
 }
 @media (max-width: 600px) {
   .pie-layout { flex-direction: column; }

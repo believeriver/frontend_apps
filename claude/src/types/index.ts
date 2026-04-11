@@ -51,6 +51,8 @@ export interface CompanyData {
 
 export type TimeRange = '1M' | '3M' | '6M' | '1Y' | '3Y' | '5Y' | '10Y' | 'ALL';
 
+export type AccountType = 'taxable' | 'nisa_growth' | 'nisa_accumulation';
+
 // ── Portfolio ────────────────────────────────────────────────
 
 /** POST /api/portfolio/ の入力 */
@@ -60,6 +62,7 @@ export interface PortfolioInput {
   purchase_price: number;
   purchased_at: string;   // YYYY-MM-DD
   memo?: string;
+  account_type?: AccountType;
 }
 
 /** 購入履歴1件 */
@@ -69,6 +72,7 @@ export interface PortfolioRecord {
   purchase_price: string;  // "58000.00"
   purchased_at: string;
   memo: string;
+  account_type: AccountType;
 }
 
 /** GET /api/portfolio/ の1要素（企業ごとに集計） */
@@ -88,6 +92,8 @@ export interface DashboardItem {
   per: number | null;
   pbr: number | null;
   total_shares: number;
+  nisa_shares: number;
+  taxable_shares: number;
   avg_purchase_price: number;
   dividend_yield: number | null;
   dividend_per_share: number | null;

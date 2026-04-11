@@ -716,6 +716,87 @@ button { font-family: inherit; }
 .pf-record-row { background: var(--bg-hover); }
 .pf-record-row td { padding: 7px 14px; border-bottom: 1px solid var(--border); }
 
+/* ── NISA行ハイライト ── */
+.pf-row-nisa td:first-child {
+  border-left: 3px solid #3fb950;
+}
+
+/* ── セクションヘッダー行 ── */
+.pf-section-header td {
+  padding: 8px 14px;
+  background: var(--bg-main);
+  border-top: 2px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+.pf-section-nisa    { color: #3fb950; }
+.pf-section-mixed   { color: #e3b341; }
+.pf-section-taxable { color: #8b949e; }
+.pf-section-count {
+  margin-left: 10px;
+  font-weight: 400;
+  color: var(--text-dim);
+  font-size: 0.75rem;
+}
+
+/* ── 購入履歴の口座バッジ ── */
+.account-badge {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border: 1px solid;
+}
+.account-badge.taxable {
+  color: #8b949e; background: rgba(139,148,158,0.12); border-color: #8b949e;
+}
+.account-badge.nisa_growth {
+  color: #3fb950; background: rgba(63,185,80,0.12); border-color: #3fb950;
+}
+.account-badge.nisa_accumulation {
+  color: #58a6ff; background: rgba(88,166,255,0.12); border-color: #58a6ff;
+}
+
+/* ── 口座種別ラジオグループ ── */
+.account-type-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.account-type-option {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  flex: 1;
+  min-width: 130px;
+  transition: border-color 0.15s, background 0.15s;
+}
+.account-type-option input[type="radio"] { display: none; }
+.account-type-option:hover {
+  border-color: var(--text-muted);
+  background: var(--bg-hover);
+}
+.account-type-option.selected {
+  border-color: #58a6ff;
+  background: rgba(88,166,255,0.08);
+}
+.account-type-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+.account-type-desc {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
 .pf-rec-actions { display: flex; gap: 6px; justify-content: flex-end; }
 
 .pf-edit-btn, .pf-delete-btn {

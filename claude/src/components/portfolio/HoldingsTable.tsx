@@ -7,6 +7,12 @@ import { DashboardItem, PortfolioItem, PortfolioRecord } from '../../types';
 import PositionModal from './PositionModal';
 import { getCategory, CATEGORY_META } from '../../utils/stockCategory';
 
+const ACCOUNT_LABEL: Record<string, string> = {
+  taxable:           '課税',
+  nisa_growth:       'NISA成長',
+  nisa_accumulation: 'NISAつみたて',
+};
+
 interface Props {
   dashboard: DashboardItem[];
   items: PortfolioItem[];
@@ -60,6 +66,112 @@ export default function HoldingsTable({ dashboard, items, currentPrices }: Props
     };
   });
 
+  // NISA/課税/混合でグループ分け
+  const nisaRows    = rows.filter((r) => r.nisa_shares > 0 && r.taxable_shares === 0);
+  const mixedRows   = rows.filter((r) => r.nisa_shares > 0 && r.taxable_shares > 0);
+  const taxableRows = rows.filter((r) => r.nisa_shares === 0);
+
+  const totalCols = 15; // 展開行のcolspan用
+
+  const renderRow = (d: typeof rows[number]) => {
+    const isOpen = expanded.has(d.company_code);
+    const isNisa = d.nisa_shares > 0;
+    return (
+      <>
+        <tr key={d.company_code} className={`list-row pf-row ${isNisa ? 'pf-row-nisa' : ''}`}>
+          <td>
+            <button className="expand-btn" onClick={() => toggleExpand(d.company_code)}
+              title={isOpen ? '折りたたむ' : '購入履歴を見る'}>
+              {isOpen ? '▾' : '▸'}
+            </button>
+          </td>
+          <td className="td-name">
+            <span className="pf-name-link" onClick={() => navigate(`/stock/${d.company_code}`)}>
+              <span className="td-code" style={{ marginRight: 8 }}>{d.company_code}</span>
+              {d.company_name}
+            </span>
+          </td>
+          <td>
+            {(() => {
+              const m = CATEGORY_META[d.category];
+              return (
+                <span className="category-badge"
+                  style={{ color: m.color, background: m.bg, borderColor: m.color }}>
+                  {m.short === '—' ? m.label : `${m.short} ${m.label}`}
+                </span>
+              );
+            })()}
+          </td>
+          <td>
+            {d.industry ? <span className="industry-tag">{d.industry}</span> : '—'}
+          </td>
+          <td style={{ textAlign: 'right' }}>{fmt(d.total_shares)}</td>
+          <td style={{ textAlign: 'right' }}>{fmt(d.avg_purchase_price)}</td>
+          <td style={{ textAlign: 'right' }}>
+            {d.currentPrice != null ? fmt(d.currentPrice) : '—'}
+          </td>
+          <td style={{ textAlign: 'right' }}>{fmt(d.cost)}</td>
+          <td style={{ textAlign: 'right' }}>
+            {d.value != null ? fmt(d.value) : '—'}
+          </td>
+          <td style={{ textAlign: 'right', fontWeight: 600,
+            color: d.gain == null ? 'inherit' : d.gain >= 0 ? 'var(--positive)' : 'var(--negative)' }}>
+            {d.gain != null ? `${d.gain >= 0 ? '+' : ''}${fmt(d.gain)}` : '—'}
+          </td>
+          <td style={{ textAlign: 'right', fontWeight: 600,
+            color: d.gainPct == null ? 'inherit' : d.gainPct >= 0 ? 'var(--positive)' : 'var(--negative)' }}>
+            {d.gainPct != null ? `${d.gainPct >= 0 ? '+' : ''}${d.gainPct.toFixed(2)}%` : '—'}
+          </td>
+          <td style={{ textAlign: 'right' }}>
+            {d.dividend_yield != null
+              ? <span className={`dividend-badge ${d.dividend_yield >= 5 ? 'high' : d.dividend_yield >= 3 ? 'mid' : 'low'}`}>
+                  {d.dividend_yield.toFixed(2)}%
+                </span>
+              : '—'}
+          </td>
+          <td style={{ textAlign: 'right', color: 'var(--positive)', fontWeight: 600 }}>
+            {d.dividend_income != null ? `${fmt(d.dividend_income)} 円` : '—'}
+          </td>
+          <td style={{ textAlign: 'right', color: 'var(--text-muted)' }}>
+            {d.per ? fmt(d.per, 2) : '—'}
+          </td>
+          <td style={{ textAlign: 'right', color: 'var(--text-muted)' }}>
+            {d.pbr ? fmt(d.pbr, 2) : '—'}
+          </td>
+        </tr>
+
+        {/* 展開行: 購入履歴 */}
+        {isOpen && d.records.map((rec) => (
+          <tr key={rec.id} className="pf-record-row">
+            <td />
+            <td colSpan={3} style={{ paddingLeft: 32, color: 'var(--text-muted)', fontSize: '0.82rem' }}>
+              📅 {rec.purchased_at}
+              {rec.memo && <span style={{ marginLeft: 8, color: 'var(--text-dim)' }}>({rec.memo})</span>}
+              <span className={`account-badge ${rec.account_type}`} style={{ marginLeft: 8 }}>
+                {ACCOUNT_LABEL[rec.account_type] ?? rec.account_type}
+              </span>
+            </td>
+            <td style={{ textAlign: 'right', fontSize: '0.82rem' }}>{fmt(rec.shares)}</td>
+            <td style={{ textAlign: 'right', fontSize: '0.82rem' }}>{fmt(parseFloat(rec.purchase_price))}</td>
+            <td />{/* 現在値 */}
+            <td style={{ textAlign: 'right', fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+              {fmt(parseFloat(rec.purchase_price) * rec.shares)}
+            </td>
+            <td colSpan={6} />
+            <td style={{ textAlign: 'right' }}>
+              <div className="pf-rec-actions">
+                <button className="pf-edit-btn"
+                  onClick={() => setEditTarget({ companyCode: d.company_code, record: rec })}>編集</button>
+                <button className="pf-delete-btn"
+                  onClick={() => setDeleteConfirm({ id: rec.id, name: `${d.company_name} (${rec.purchased_at})` })}>削除</button>
+              </div>
+            </td>
+          </tr>
+        ))}
+      </>
+    );
+  };
+
   return (
     <>
       <div className="table-scroll">
@@ -84,117 +196,38 @@ export default function HoldingsTable({ dashboard, items, currentPrices }: Props
             </tr>
           </thead>
           <tbody>
-            {rows.map((d) => {
-              const isOpen = expanded.has(d.company_code);
-              return (
-                <>
-                  <tr key={d.company_code} className="list-row pf-row">
-                    {/* 展開ボタン */}
-                    <td>
-                      <button
-                        className="expand-btn"
-                        onClick={() => toggleExpand(d.company_code)}
-                        title={isOpen ? '折りたたむ' : '購入履歴を見る'}
-                      >
-                        {isOpen ? '▾' : '▸'}
-                      </button>
-                    </td>
-                    <td className="td-name">
-                      <span
-                        className="pf-name-link"
-                        onClick={() => navigate(`/stock/${d.company_code}`)}
-                      >
-                        <span className="td-code" style={{ marginRight: 8 }}>{d.company_code}</span>
-                        {d.company_name}
-                      </span>
-                    </td>
-                    <td>
-                      {(() => {
-                        const m = CATEGORY_META[d.category];
-                        return (
-                          <span className="category-badge"
-                            style={{ color: m.color, background: m.bg, borderColor: m.color }}>
-                            {m.short === '—' ? m.label : `${m.short} ${m.label}`}
-                          </span>
-                        );
-                      })()}
-                    </td>
-                    <td>
-                      {d.industry
-                        ? <span className="industry-tag">{d.industry}</span>
-                        : '—'}
-                    </td>
-                    <td style={{ textAlign: 'right' }}>{fmt(d.total_shares)}</td>
-                    <td style={{ textAlign: 'right' }}>{fmt(d.avg_purchase_price)}</td>
-                    <td style={{ textAlign: 'right' }}>
-                      {d.currentPrice != null ? fmt(d.currentPrice) : '—'}
-                    </td>
-                    <td style={{ textAlign: 'right' }}>{fmt(d.cost)}</td>
-                    <td style={{ textAlign: 'right' }}>
-                      {d.value != null ? fmt(d.value) : '—'}
-                    </td>
-                    <td style={{ textAlign: 'right', fontWeight: 600,
-                      color: d.gain == null ? 'inherit' : d.gain >= 0 ? 'var(--positive)' : 'var(--negative)' }}>
-                      {d.gain != null
-                        ? `${d.gain >= 0 ? '+' : ''}${fmt(d.gain)}`
-                        : '—'}
-                    </td>
-                    <td style={{ textAlign: 'right', fontWeight: 600,
-                      color: d.gainPct == null ? 'inherit' : d.gainPct >= 0 ? 'var(--positive)' : 'var(--negative)' }}>
-                      {d.gainPct != null
-                        ? `${d.gainPct >= 0 ? '+' : ''}${d.gainPct.toFixed(2)}%`
-                        : '—'}
-                    </td>
-                    <td style={{ textAlign: 'right' }}>
-                      {d.dividend_yield != null
-                        ? <span className={`dividend-badge ${d.dividend_yield >= 5 ? 'high' : d.dividend_yield >= 3 ? 'mid' : 'low'}`}>
-                            {d.dividend_yield.toFixed(2)}%
-                          </span>
-                        : '—'}
-                    </td>
-                    <td style={{ textAlign: 'right', color: 'var(--positive)', fontWeight: 600 }}>
-                      {d.dividend_income != null ? `${fmt(d.dividend_income)} 円` : '—'}
-                    </td>
-                    <td style={{ textAlign: 'right', color: 'var(--text-muted)' }}>
-                      {d.per ? fmt(d.per, 2) : '—'}
-                    </td>
-                    <td style={{ textAlign: 'right', color: 'var(--text-muted)' }}>
-                      {d.pbr ? fmt(d.pbr, 2) : '—'}
-                    </td>
-                  </tr>
+            {/* NISAのみ */}
+            {nisaRows.length > 0 && (
+              <tr className="pf-section-header">
+                <td colSpan={totalCols}>
+                  <span className="pf-section-nisa">🌿 NISA口座</span>
+                  <span className="pf-section-count">{nisaRows.length} 銘柄</span>
+                </td>
+              </tr>
+            )}
+            {nisaRows.map(renderRow)}
 
-                  {/* 展開行: 購入履歴 */}
-                  {isOpen && d.records.map((rec) => (
-                    <tr key={rec.id} className="pf-record-row">
-                      <td />
-                      <td colSpan={3} style={{ paddingLeft: 32, color: 'var(--text-muted)', fontSize: '0.82rem' }}>
-                        📅 {rec.purchased_at}
-                        {rec.memo && <span style={{ marginLeft: 8, color: 'var(--text-dim)' }}>({rec.memo})</span>}
-                      </td>
-                      <td style={{ textAlign: 'right', fontSize: '0.82rem' }}>{fmt(rec.shares)}</td>
-                      <td style={{ textAlign: 'right', fontSize: '0.82rem' }}>{fmt(parseFloat(rec.purchase_price))}</td>
-                      <td />{/* 現在値 */}
-                      <td style={{ textAlign: 'right', fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-                        {fmt(parseFloat(rec.purchase_price) * rec.shares)}
-                      </td>
-                      <td colSpan={6} />
-                      <td style={{ textAlign: 'right' }}>
-                        <div className="pf-rec-actions">
-                          <button
-                            className="pf-edit-btn"
-                            onClick={() => setEditTarget({ companyCode: d.company_code, record: rec })}
-                          >編集</button>
-                          <button
-                            className="pf-delete-btn"
-                            onClick={() => setDeleteConfirm({ id: rec.id, name: `${d.company_name} (${rec.purchased_at})` })}
-                          >削除</button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </>
-              );
-            })}
+            {/* NISA + 課税の混合 */}
+            {mixedRows.length > 0 && (
+              <tr className="pf-section-header">
+                <td colSpan={totalCols}>
+                  <span className="pf-section-mixed">🔀 NISA・課税 混合</span>
+                  <span className="pf-section-count">{mixedRows.length} 銘柄</span>
+                </td>
+              </tr>
+            )}
+            {mixedRows.map(renderRow)}
+
+            {/* 課税のみ */}
+            {taxableRows.length > 0 && (
+              <tr className="pf-section-header">
+                <td colSpan={totalCols}>
+                  <span className="pf-section-taxable">🏦 課税口座</span>
+                  <span className="pf-section-count">{taxableRows.length} 銘柄</span>
+                </td>
+              </tr>
+            )}
+            {taxableRows.map(renderRow)}
           </tbody>
         </table>
       </div>

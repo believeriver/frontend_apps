@@ -2,7 +2,13 @@ import { useState, useEffect, FormEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../../store';
 import { addPosition, updatePosition, loadPortfolio, clearError } from '../../store/portfolioSlice';
-import { PortfolioRecord } from '../../types';
+import { PortfolioRecord, AccountType } from '../../types';
+
+const ACCOUNT_OPTIONS: { value: AccountType; label: string; desc: string }[] = [
+  { value: 'taxable',          label: '課税口座',            desc: '特定口座・一般口座' },
+  { value: 'nisa_growth',      label: '新NISA 成長投資枠',   desc: '年240万円・非課税' },
+  { value: 'nisa_accumulation',label: '新NISA つみたて投資枠', desc: '年120万円・非課税' },
+];
 
 interface Props {
   onClose: () => void;
@@ -16,13 +22,14 @@ export default function PositionModal({ onClose, editRecord }: Props) {
 
   const isEdit = !!editRecord;
 
-  const [code,     setCode]     = useState(editRecord?.companyCode ?? '');
-  const [shares,   setShares]   = useState(String(editRecord?.record.shares ?? ''));
-  const [price,    setPrice]    = useState(editRecord?.record.purchase_price ?? '');
+  const [code,        setCode]        = useState(editRecord?.companyCode ?? '');
+  const [shares,      setShares]      = useState(String(editRecord?.record.shares ?? ''));
+  const [price,       setPrice]       = useState(editRecord?.record.purchase_price ?? '');
   const todayStr = new Date().toISOString().slice(0, 10);
-  const [date,     setDate]     = useState(editRecord?.record.purchased_at ?? todayStr);
-  const [memo,     setMemo]     = useState(editRecord?.record.memo ?? '');
-  const [localErr, setLocalErr] = useState<string | null>(null);
+  const [date,        setDate]        = useState(editRecord?.record.purchased_at ?? todayStr);
+  const [memo,        setMemo]        = useState(editRecord?.record.memo ?? '');
+  const [accountType, setAccountType] = useState<AccountType>(editRecord?.record.account_type ?? 'taxable');
+  const [localErr,    setLocalErr]    = useState<string | null>(null);
 
   useEffect(() => {
     dispatch(clearError());
@@ -46,11 +53,12 @@ export default function PositionModal({ onClose, editRecord }: Props) {
     if (!date)                               { setLocalErr('購入日を入力してください'); return; }
 
     const body = {
-      company_code:  code.trim().toUpperCase(),
-      shares:        sharesNum,
+      company_code:   code.trim().toUpperCase(),
+      shares:         sharesNum,
       purchase_price: priceNum,
-      purchased_at:  date,
-      memo:          memo.trim(),
+      purchased_at:   date,
+      memo:           memo.trim(),
+      account_type:   accountType,
     };
 
     let result;
@@ -130,6 +138,28 @@ export default function PositionModal({ onClose, editRecord }: Props) {
                 onChange={(e) => setDate(e.target.value)}
                 required
               />
+            </div>
+          </div>
+
+          <div className="auth-field">
+            <label className="auth-label">口座種別</label>
+            <div className="account-type-group">
+              {ACCOUNT_OPTIONS.map((opt) => (
+                <label
+                  key={opt.value}
+                  className={`account-type-option ${accountType === opt.value ? 'selected' : ''}`}
+                >
+                  <input
+                    type="radio"
+                    name="account_type"
+                    value={opt.value}
+                    checked={accountType === opt.value}
+                    onChange={() => setAccountType(opt.value)}
+                  />
+                  <span className="account-type-label">{opt.label}</span>
+                  <span className="account-type-desc">{opt.desc}</span>
+                </label>
+              ))}
             </div>
           </div>
 

@@ -81,9 +81,18 @@ export default function PortfolioPage() {
   );
   const categoryOrder: StockCategory[] = ['defensive', 'cyclical', 'financial', 'other'];
 
-  const totalDividend     = dashboard.reduce((s, d) => s + (d.dividend_income ?? 0), 0);
-  const TAX_RATE          = 0.20315;  // 所得税15.315% + 住民税5%
-  const totalDividendNet  = totalDividend * (1 - TAX_RATE);
+  const totalDividend  = dashboard.reduce((s, d) => s + (d.dividend_income ?? 0), 0);
+  const TAX_RATE       = 0.20315;  // 所得税15.315% + 住民税5%
+
+  // NISA対応の税引後計算
+  // nisa_shares分は非課税、taxable_shares分のみ課税
+  const totalDividendNet = dashboard.reduce((s, d) => {
+    if (!d.dividend_income || d.total_shares === 0) return s;
+    const perShare    = d.dividend_income / d.total_shares;
+    const nisaIncome  = perShare * d.nisa_shares;               // 非課税
+    const taxableIncome = perShare * d.taxable_shares;          // 課税
+    return s + nisaIncome + taxableIncome * (1 - TAX_RATE);
+  }, 0);
   const avgYield          = totalCost > 0 ? (totalDividend / totalCost) * 100 : 0;
   const stockCount      = dashboard.length;
 

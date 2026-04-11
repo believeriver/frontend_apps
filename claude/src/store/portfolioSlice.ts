@@ -7,6 +7,7 @@ import {
   apiUpdatePosition,
   apiDeletePosition,
 } from '../api/portfolio';
+import { fetchCompanyList } from '../api/api';
 import {
   PortfolioItem,
   DashboardItem,
@@ -19,6 +20,7 @@ interface PortfolioState {
   items: PortfolioItem[];
   dashboard: DashboardItem[];
   industry: IndustryItem[];
+  currentPrices: Record<string, number>;   // code -> 現在株価
   loading: boolean;
   mutating: boolean;   // 追加・更新・削除中
   error: string | null;
@@ -28,6 +30,7 @@ const initialState: PortfolioState = {
   items: [],
   dashboard: [],
   industry: [],
+  currentPrices: {},
   loading: false,
   mutating: false,
   error: null,
@@ -45,12 +48,18 @@ export const loadPortfolio = createAsyncThunk(
   'portfolio/load',
   async (_, { getState }) => {
     const t = token(getState() as RootState);
-    const [items, dashboard, industry] = await Promise.all([
+    const [items, dashboard, industry, companies] = await Promise.all([
       apiFetchPortfolio(t),
       apiFetchDashboard(t),
       apiFetchIndustry(t),
+      fetchCompanyList(),
     ]);
-    return { items, dashboard, industry };
+    const currentPrices: Record<string, number> = {};
+    for (const c of companies) {
+      const price = parseFloat(c.stock.replace(/,/g, ''));
+      if (!isNaN(price)) currentPrices[c.code] = price;
+    }
+    return { items, dashboard, industry, currentPrices };
   }
 );
 
@@ -117,9 +126,10 @@ const portfolioSlice = createSlice({
       })
       .addCase(loadPortfolio.fulfilled, (state, action) => {
         state.loading = false;
-        state.items     = action.payload.items;
-        state.dashboard = action.payload.dashboard;
-        state.industry  = action.payload.industry;
+        state.items         = action.payload.items;
+        state.dashboard     = action.payload.dashboard;
+        state.industry      = action.payload.industry;
+        state.currentPrices = action.payload.currentPrices;
       })
       .addCase(loadPortfolio.rejected, (state, action) => {
         state.loading = false;

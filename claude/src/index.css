@@ -140,6 +140,8 @@ button { font-family: inherit; }
 
 .positive { color: var(--positive); }
 .negative { color: var(--negative); }
+.gain-positive { color: var(--positive); font-weight: 600; }
+.gain-negative { color: var(--negative); font-weight: 600; }
 
 .stock-meta {
   display: flex;

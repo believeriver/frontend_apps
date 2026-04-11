@@ -9,13 +9,14 @@ import PositionModal from './PositionModal';
 interface Props {
   dashboard: DashboardItem[];
   items: PortfolioItem[];
+  currentPrices: Record<string, number>;
 }
 
 function fmt(n: number, dec = 0) {
   return n.toLocaleString('ja-JP', { minimumFractionDigits: dec, maximumFractionDigits: dec });
 }
 
-export default function HoldingsTable({ dashboard, items }: Props) {
+export default function HoldingsTable({ dashboard, items, currentPrices }: Props) {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { mutating } = useSelector((s: RootState) => s.portfolio);
@@ -39,11 +40,22 @@ export default function HoldingsTable({ dashboard, items }: Props) {
   };
 
   // dashboardとitemsをコードで結合
-  const rows = dashboard.map((d) => ({
-    ...d,
-    records: items.find((it) => it.company_code === d.company_code)?.records ?? [],
-    cost: d.avg_purchase_price * d.total_shares,
-  }));
+  const rows = dashboard.map((d) => {
+    const cost         = Math.round(d.avg_purchase_price * d.total_shares);
+    const currentPrice = currentPrices[d.company_code] ?? null;
+    const value        = currentPrice != null ? currentPrice * d.total_shares : null;
+    const gain         = value != null ? value - cost : null;
+    const gainPct      = gain != null && cost > 0 ? (gain / cost) * 100 : null;
+    return {
+      ...d,
+      records: items.find((it) => it.company_code === d.company_code)?.records ?? [],
+      cost,
+      currentPrice,
+      value,
+      gain,
+      gainPct,
+    };
+  });
 
   return (
     <>
@@ -56,7 +68,11 @@ export default function HoldingsTable({ dashboard, items }: Props) {
               <th>業種</th>
               <th>保有株数</th>
               <th>平均取得単価</th>
+              <th>現在値</th>
               <th>取得総額</th>
+              <th>評価額</th>
+              <th>損益</th>
+              <th>損益率</th>
               <th>配当利回り</th>
               <th>年間配当収入</th>
               <th>PER</th>
@@ -95,7 +111,25 @@ export default function HoldingsTable({ dashboard, items }: Props) {
                     </td>
                     <td style={{ textAlign: 'right' }}>{fmt(d.total_shares)}</td>
                     <td style={{ textAlign: 'right' }}>{fmt(d.avg_purchase_price)}</td>
+                    <td style={{ textAlign: 'right' }}>
+                      {d.currentPrice != null ? fmt(d.currentPrice) : '—'}
+                    </td>
                     <td style={{ textAlign: 'right' }}>{fmt(d.cost)}</td>
+                    <td style={{ textAlign: 'right' }}>
+                      {d.value != null ? fmt(d.value) : '—'}
+                    </td>
+                    <td style={{ textAlign: 'right', fontWeight: 600,
+                      color: d.gain == null ? 'inherit' : d.gain >= 0 ? 'var(--positive)' : 'var(--negative)' }}>
+                      {d.gain != null
+                        ? `${d.gain >= 0 ? '+' : ''}${fmt(d.gain)}`
+                        : '—'}
+                    </td>
+                    <td style={{ textAlign: 'right', fontWeight: 600,
+                      color: d.gainPct == null ? 'inherit' : d.gainPct >= 0 ? 'var(--positive)' : 'var(--negative)' }}>
+                      {d.gainPct != null
+                        ? `${d.gainPct >= 0 ? '+' : ''}${d.gainPct.toFixed(2)}%`
+                        : '—'}
+                    </td>
                     <td style={{ textAlign: 'right' }}>
                       {d.dividend_yield != null
                         ? <span className={`dividend-badge ${d.dividend_yield >= 5 ? 'high' : d.dividend_yield >= 3 ? 'mid' : 'low'}`}>
@@ -124,10 +158,11 @@ export default function HoldingsTable({ dashboard, items }: Props) {
                       </td>
                       <td style={{ textAlign: 'right', fontSize: '0.82rem' }}>{fmt(rec.shares)}</td>
                       <td style={{ textAlign: 'right', fontSize: '0.82rem' }}>{fmt(parseFloat(rec.purchase_price))}</td>
+                      <td />{/* 現在値 */}
                       <td style={{ textAlign: 'right', fontSize: '0.82rem', color: 'var(--text-muted)' }}>
                         {fmt(parseFloat(rec.purchase_price) * rec.shares)}
                       </td>
-                      <td colSpan={3} />
+                      <td colSpan={6} />
                       <td style={{ textAlign: 'right' }}>
                         <div className="pf-rec-actions">
                           <button

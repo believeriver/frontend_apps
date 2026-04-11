@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store';
@@ -8,7 +8,7 @@ import DividendBarChart from '../components/portfolio/DividendBarChart';
 import HoldingsTable from '../components/portfolio/HoldingsTable';
 import PositionModal from '../components/portfolio/PositionModal';
 
-function SummaryCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
+function SummaryCard({ label, value, sub }: { label: string; value: string; sub?: ReactNode }) {
   return (
     <div className="pf-summary-card">
       <span className="pf-summary-label">{label}</span>
@@ -20,7 +20,7 @@ function SummaryCard({ label, value, sub }: { label: string; value: string; sub?
 
 export default function PortfolioPage() {
   const dispatch = useDispatch<AppDispatch>();
-  const { dashboard, industry, items, loading, error } = useSelector(
+  const { dashboard, industry, items, currentPrices, loading, error } = useSelector(
     (s: RootState) => s.portfolio
   );
   const { accessToken } = useSelector((s: RootState) => s.auth);
@@ -71,6 +71,14 @@ export default function PortfolioPage() {
   const avgYield        = totalCost > 0 ? (totalDividend / totalCost) * 100 : 0;
   const stockCount      = dashboard.length;
 
+  // 評価額・損益計算
+  const totalValue = dashboard.reduce((s, d) => {
+    const price = currentPrices[d.company_code];
+    return price != null ? s + price * d.total_shares : s + d.avg_purchase_price * d.total_shares;
+  }, 0);
+  const totalGain    = totalValue - totalCost;
+  const totalGainPct = totalCost > 0 ? (totalGain / totalCost) * 100 : 0;
+
   return (
     <div className="portfolio-page">
       {/* ページヘッダー */}
@@ -88,7 +96,17 @@ export default function PortfolioPage() {
       <div className="pf-summary-row">
         <SummaryCard
           label="総投資額"
-          value={`${totalCost.toLocaleString('ja-JP')} 円`}
+          value={`${Math.round(totalCost).toLocaleString('ja-JP')} 円`}
+        />
+        <SummaryCard
+          label="評価額"
+          value={`${totalValue.toLocaleString('ja-JP')} 円`}
+          sub={
+            <span className={totalGain >= 0 ? 'gain-positive' : 'gain-negative'}>
+              {totalGain >= 0 ? '+' : ''}{totalGain.toLocaleString('ja-JP', { maximumFractionDigits: 0 })} 円
+              　({totalGainPct >= 0 ? '+' : ''}{totalGainPct.toFixed(2)}%)
+            </span>
+          }
         />
         <SummaryCard
           label="年間配当収入（予想）"
@@ -130,7 +148,7 @@ export default function PortfolioPage() {
             </button>
           </div>
         ) : (
-          <HoldingsTable dashboard={dashboard} items={items} />
+          <HoldingsTable dashboard={dashboard} items={items} currentPrices={currentPrices} />
         )}
       </div>
 

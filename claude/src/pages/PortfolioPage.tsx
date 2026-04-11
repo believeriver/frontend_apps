@@ -67,8 +67,10 @@ export default function PortfolioPage() {
 
   // サマリー計算
   const totalCost       = dashboard.reduce((s, d) => s + d.avg_purchase_price * d.total_shares, 0);
-  const totalDividend   = dashboard.reduce((s, d) => s + (d.dividend_income ?? 0), 0);
-  const avgYield        = totalCost > 0 ? (totalDividend / totalCost) * 100 : 0;
+  const totalDividend     = dashboard.reduce((s, d) => s + (d.dividend_income ?? 0), 0);
+  const TAX_RATE          = 0.20315;  // 所得税15.315% + 住民税5%
+  const totalDividendNet  = totalDividend * (1 - TAX_RATE);
+  const avgYield          = totalCost > 0 ? (totalDividend / totalCost) * 100 : 0;
   const stockCount      = dashboard.length;
 
   // 評価額・損益計算
@@ -109,9 +111,14 @@ export default function PortfolioPage() {
           }
         />
         <SummaryCard
-          label="年間配当収入（予想）"
+          label="年間配当収入（税引前）"
           value={`${totalDividend.toLocaleString('ja-JP', { maximumFractionDigits: 0 })} 円`}
           sub={`月平均 ${(totalDividend / 12).toLocaleString('ja-JP', { maximumFractionDigits: 0 })} 円`}
+        />
+        <SummaryCard
+          label="年間配当収入（税引後 20.315%）"
+          value={`${totalDividendNet.toLocaleString('ja-JP', { maximumFractionDigits: 0 })} 円`}
+          sub={`月平均 ${(totalDividendNet / 12).toLocaleString('ja-JP', { maximumFractionDigits: 0 })} 円`}
         />
         <SummaryCard
           label="ポートフォリオ利回り"

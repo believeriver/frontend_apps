@@ -19,7 +19,8 @@ export default function PositionModal({ onClose, editRecord }: Props) {
   const [code,     setCode]     = useState(editRecord?.companyCode ?? '');
   const [shares,   setShares]   = useState(String(editRecord?.record.shares ?? ''));
   const [price,    setPrice]    = useState(editRecord?.record.purchase_price ?? '');
-  const [date,     setDate]     = useState(editRecord?.record.purchased_at ?? '');
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const [date,     setDate]     = useState(editRecord?.record.purchased_at ?? todayStr);
   const [memo,     setMemo]     = useState(editRecord?.record.memo ?? '');
   const [localErr, setLocalErr] = useState<string | null>(null);
 

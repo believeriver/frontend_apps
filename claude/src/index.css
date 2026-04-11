@@ -502,54 +502,59 @@ button { font-family: inherit; }
   gap: 16px;
 }
 .pie-chart-area {
-  flex: 0 0 360px;
+  flex: 0 0 420px;
 }
 .pie-legend {
   flex: 1;
-  max-height: 340px;
+  max-height: 400px;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  /* 2列グリッド */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-content: start;
+  gap: 2px 8px;
   padding-right: 4px;
 }
 .pie-legend-item {
-  display: grid;
-  grid-template-columns: 12px 1fr 46px;
+  display: flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 8px;
+  padding: 4px 6px;
   border-radius: 4px;
   cursor: default;
   transition: background 0.15s;
+  min-width: 0;
 }
 .pie-legend-item.active,
 .pie-legend-item:hover {
   background: rgba(255,255,255,0.06);
 }
 .pie-legend-dot {
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
+  flex-shrink: 0;
 }
 .pie-legend-name {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--text-dim);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
 }
 .pie-legend-pct {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   color: var(--text-main);
-  font-weight: 600;
+  font-weight: 700;
   white-space: nowrap;
-  text-align: right;
+  flex-shrink: 0;
 }
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .pie-layout { flex-direction: column; }
   .pie-chart-area { flex: none; width: 100%; }
-  .pie-legend { max-height: 200px; }
+  .pie-legend { max-height: 200px; grid-template-columns: 1fr 1fr; }
 }
 
 .pf-chart-card {

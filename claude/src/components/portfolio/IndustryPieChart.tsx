@@ -23,13 +23,13 @@ const ActiveShape = (props: any) => {
     <g>
       <Sector cx={cx} cy={cy} innerRadius={innerRadius} outerRadius={outerRadius + 8}
         startAngle={startAngle} endAngle={endAngle} fill={fill} />
-      <text x={cx} y={cy - 18} textAnchor="middle" fill="#e6edf3" fontSize={14} fontWeight={700}>
+      <text x={cx} y={cy - 20} textAnchor="middle" fill="#e6edf3" fontSize={14} fontWeight={700}>
         {payload.industry.length > 12 ? payload.industry.slice(0, 12) + '…' : payload.industry}
       </text>
-      <text x={cx} y={cy + 10} textAnchor="middle" fill="#e6edf3" fontSize={22} fontWeight={800}>
+      <text x={cx} y={cy + 12} textAnchor="middle" fill="#e6edf3" fontSize={26} fontWeight={800}>
         {payload.ratio.toFixed(1)}%
       </text>
-      <text x={cx} y={cy + 32} textAnchor="middle" fill="#8b949e" fontSize={12}>
+      <text x={cx} y={cy + 36} textAnchor="middle" fill="#8b949e" fontSize={12}>
         {payload.total_cost.toLocaleString('ja-JP')} 円
       </text>
     </g>
@@ -45,7 +45,7 @@ export default function IndustryPieChart({ data }: Props) {
       <div className="pie-layout">
         {/* ドーナツチャート */}
         <div className="pie-chart-area">
-          <ResponsiveContainer width="100%" height={340}>
+          <ResponsiveContainer width="100%" height={400}>
             <PieChart>
               <Pie
                 data={data}
@@ -53,8 +53,8 @@ export default function IndustryPieChart({ data }: Props) {
                 nameKey="industry"
                 cx="50%"
                 cy="50%"
-                innerRadius={90}
-                outerRadius={140}
+                innerRadius={108}
+                outerRadius={168}
                 activeShape={ActiveShape}
                 onMouseEnter={(_, index) => setActiveIndex(index)}
                 {...{ activeIndex } as any}

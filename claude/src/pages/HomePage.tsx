@@ -13,6 +13,7 @@ import {
   PAGE_SIZE_EXPORT as PAGE_SIZE,
   SortKey,
 } from '../store/companyListSlice';
+import { getCategory, CATEGORY_META } from '../utils/stockCategory';
 
 function parsePrice(s: string): number {
   return parseFloat(s.replace(/,/g, '')) || 0;
@@ -119,6 +120,7 @@ export default function HomePage() {
                 </th>
               ))}
               {/* ソート不可の固定列 */}
+              <th>区分</th>
               <th className="col-industry">業種</th>
               <th className="col-desc">企業説明</th>
             </tr>
@@ -148,6 +150,18 @@ export default function HomePage() {
                   </td>
                   <td className="td-ratio">{fmtRatio(info?.per)}</td>
                   <td className="td-ratio">{fmtRatio(info?.pbr)}</td>
+                  <td>
+                    {(() => {
+                      const cat = getCategory(info?.industry ?? null);
+                      const m   = CATEGORY_META[cat];
+                      return (
+                        <span className="category-badge"
+                          style={{ color: m.color, background: m.bg, borderColor: m.color }}>
+                          {m.short === '—' ? m.label : `${m.short} ${m.label}`}
+                        </span>
+                      );
+                    })()}
+                  </td>
                   <td className="td-industry">
                     {info?.industry
                       ? <span className="industry-tag">{info.industry}</span>

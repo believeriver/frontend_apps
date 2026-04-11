@@ -402,6 +402,220 @@ button { font-family: inherit; }
 .description { color: var(--text-muted); font-size: 0.9rem; line-height: 1.8; }
 .stock-page { display: flex; flex-direction: column; }
 
+/* ── Portfolio Nav Link ── */
+.pf-nav-link {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  padding: 5px 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  transition: all 0.15s;
+}
+.pf-nav-link:hover, .pf-nav-link.active {
+  color: var(--accent);
+  border-color: var(--accent);
+  text-decoration: none;
+}
+
+/* ── Portfolio Page Layout ── */
+.portfolio-page { display: flex; flex-direction: column; gap: 20px; }
+
+.pf-page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.pf-page-title { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
+.pf-page-sub   { font-size: 0.85rem; color: var(--text-muted); margin-top: 2px; }
+
+.pf-add-btn {
+  padding: 8px 18px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+.pf-add-btn:hover { opacity: 0.85; }
+
+/* ── Summary Cards ── */
+.pf-summary-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.pf-summary-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pf-summary-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.pf-summary-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.5px;
+}
+.pf-summary-sub { font-size: 0.78rem; color: var(--text-dim); }
+
+/* ── Charts Row ── */
+.pf-charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 800px) {
+  .pf-charts-row { grid-template-columns: 1fr; }
+}
+
+.pf-chart-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+}
+.pf-chart-title { font-size: 0.9rem; font-weight: 600; color: var(--text-muted); margin-bottom: 12px; }
+
+/* ── Holdings Table ── */
+.pf-table th { background: var(--bg-hover); }
+
+.pf-row { cursor: default; }
+
+.expand-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 2px 6px;
+  line-height: 1;
+  border-radius: 4px;
+  transition: color 0.15s;
+}
+.expand-btn:hover { color: var(--accent); }
+
+.pf-name-link {
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.pf-name-link:hover { color: var(--accent); }
+
+.pf-record-row { background: var(--bg-hover); }
+.pf-record-row td { padding: 7px 14px; border-bottom: 1px solid var(--border); }
+
+.pf-rec-actions { display: flex; gap: 6px; justify-content: flex-end; }
+
+.pf-edit-btn, .pf-delete-btn {
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-weight: 500;
+}
+.pf-edit-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+.pf-edit-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.pf-delete-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+.pf-delete-btn:hover { border-color: var(--negative); color: var(--negative); }
+
+.pf-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 48px 24px;
+  color: var(--text-muted);
+}
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 16px;
+  backdrop-filter: blur(3px);
+}
+
+.modal-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px 32px;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.modal-title { font-size: 1.1rem; font-weight: 700; }
+
+.modal-close {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: color 0.15s;
+}
+.modal-close:hover { color: var(--text); }
+
+.modal-form { display: flex; flex-direction: column; gap: 14px; }
+
+.modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.modal-actions { display: flex; gap: 10px; margin-top: 6px; }
+
+.modal-cancel-btn {
+  padding: 10px 20px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.modal-cancel-btn:hover { border-color: var(--text-muted); color: var(--text); }
+
 /* ── Header Auth Control ── */
 .auth-control {
   display: flex;

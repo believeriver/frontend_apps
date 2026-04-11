@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, NavLink, useNavigate } from 'react-router-dom';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { store, RootState, AppDispatch } from './store';
 import { restoreSession, logout } from './store/authSlice';
@@ -8,12 +8,13 @@ import HomePage from './pages/HomePage';
 import StockPage from './pages/StockPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import PortfolioPage from './pages/PortfolioPage';
 import './index.css';
 
 // ── ヘッダー内の認証コントロール ────────────────────────────
 function AuthControl() {
-  const dispatch  = useDispatch<AppDispatch>();
-  const navigate  = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const { email, accessToken } = useSelector((s: RootState) => s.auth);
 
   const handleLogout = async () => {
@@ -24,6 +25,12 @@ function AuthControl() {
   if (accessToken) {
     return (
       <div className="auth-control">
+        <NavLink
+          to="/portfolio"
+          className={({ isActive }) => `auth-nav-link pf-nav-link ${isActive ? 'active' : ''}`}
+        >
+          ポートフォリオ
+        </NavLink>
         <span className="auth-user">{email ?? 'ログイン中'}</span>
         <button className="auth-logout-btn" onClick={handleLogout}>ログアウト</button>
       </div>
@@ -59,7 +66,6 @@ function Layout({ children }: { children: React.ReactNode }) {
 function AppInner() {
   const dispatch = useDispatch<AppDispatch>();
 
-  // 起動時にリフレッシュトークンでセッション復元
   useEffect(() => {
     dispatch(restoreSession());
   }, [dispatch]);
@@ -68,10 +74,11 @@ function AppInner() {
     <BrowserRouter>
       <Layout>
         <Routes>
-          <Route path="/"          element={<HomePage />} />
+          <Route path="/"           element={<HomePage />} />
           <Route path="/stock/:code" element={<StockPage />} />
-          <Route path="/login"     element={<LoginPage />} />
-          <Route path="/register"  element={<RegisterPage />} />
+          <Route path="/portfolio"  element={<PortfolioPage />} />
+          <Route path="/login"      element={<LoginPage />} />
+          <Route path="/register"   element={<RegisterPage />} />
         </Routes>
       </Layout>
     </BrowserRouter>

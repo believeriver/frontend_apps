@@ -50,3 +50,55 @@ export interface CompanyData {
 }
 
 export type TimeRange = '1M' | '3M' | '6M' | '1Y' | '3Y' | '5Y' | '10Y' | 'ALL';
+
+// ── Portfolio ────────────────────────────────────────────────
+
+/** POST /api/portfolio/ の入力 */
+export interface PortfolioInput {
+  company_code: string;
+  shares: number;
+  purchase_price: number;
+  purchased_at: string;   // YYYY-MM-DD
+  memo?: string;
+}
+
+/** 購入履歴1件 */
+export interface PortfolioRecord {
+  id: number;
+  shares: number;
+  purchase_price: string;  // "58000.00"
+  purchased_at: string;
+  memo: string;
+}
+
+/** GET /api/portfolio/ の1要素（企業ごとに集計） */
+export interface PortfolioItem {
+  company_code: string;
+  company_name: string;
+  total_shares: number;
+  avg_purchase_price: string;
+  records: PortfolioRecord[];
+}
+
+/** GET /api/portfolio/dashboard/ の1要素 */
+export interface DashboardItem {
+  company_code: string;
+  company_name: string;
+  industry: string | null;
+  per: number | null;
+  pbr: number | null;
+  total_shares: number;
+  avg_purchase_price: number;
+  dividend_yield: number | null;
+  dividend_per_share: number | null;
+  fiscal_year: string | null;
+  dividend_income: number | null;
+  dividend_income_source: string | null;
+}
+
+/** GET /api/portfolio/industry/ の1要素 */
+export interface IndustryItem {
+  industry: string;
+  total_cost: number;
+  ratio: number;
+}

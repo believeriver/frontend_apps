@@ -486,6 +486,70 @@ button { font-family: inherit; }
   .pf-charts-row { grid-template-columns: 1fr; }
 }
 
+/* ── Charts Col (stacked) ── */
+.pf-charts-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Pie chart layout ── */
+.pie-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.pie-chart-area {
+  flex: 0 0 300px;
+}
+.pie-legend {
+  flex: 1;
+  max-height: 280px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-right: 4px;
+}
+.pie-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  cursor: default;
+  transition: background 0.15s;
+}
+.pie-legend-item.active,
+.pie-legend-item:hover {
+  background: rgba(255,255,255,0.06);
+}
+.pie-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.pie-legend-name {
+  flex: 1;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pie-legend-pct {
+  font-size: 0.8rem;
+  color: var(--text-main);
+  font-weight: 600;
+  white-space: nowrap;
+}
+@media (max-width: 600px) {
+  .pie-layout { flex-direction: column; }
+  .pie-chart-area { flex: none; width: 100%; }
+  .pie-legend { max-height: 200px; }
+}
+
 .pf-chart-card {
   background: var(--bg-card);
   border: 1px solid var(--border);

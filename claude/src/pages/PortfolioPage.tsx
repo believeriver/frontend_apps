@@ -105,11 +105,13 @@ export default function PortfolioPage() {
         />
       </div>
 
-      {/* グラフ行 */}
+      {/* グラフ行: 上下2段レイアウト */}
       {dashboard.length > 0 && (
-        <div className="pf-charts-row">
+        <div className="pf-charts-col">
+          {/* 上段: 円グラフ（業種別）*/}
           {industry.length > 0 && <IndustryPieChart data={industry} />}
-          <DividendBarChart data={dashboard} />
+          {/* 下段: 横棒グラフ（配当収入上位20）*/}
+          <DividendBarChart data={dashboard} topN={20} />
         </div>
       )}
 

@@ -7,6 +7,7 @@ import IndustryPieChart from '../components/portfolio/IndustryPieChart';
 import DividendBarChart from '../components/portfolio/DividendBarChart';
 import HoldingsTable from '../components/portfolio/HoldingsTable';
 import PositionModal from '../components/portfolio/PositionModal';
+import { getCategory, CATEGORY_META, StockCategory } from '../utils/stockCategory';
 
 function SummaryCard({ label, value, sub }: { label: string; value: string; sub?: ReactNode }) {
   return (
@@ -25,6 +26,7 @@ export default function PortfolioPage() {
   );
   const { accessToken } = useSelector((s: RootState) => s.auth);
   const [showAdd, setShowAdd] = useState(false);
+  const [showCatInfo, setShowCatInfo] = useState(false);
 
   useEffect(() => {
     if (accessToken) dispatch(loadPortfolio());
@@ -67,6 +69,18 @@ export default function PortfolioPage() {
 
   // サマリー計算
   const totalCost       = dashboard.reduce((s, d) => s + d.avg_purchase_price * d.total_shares, 0);
+  // カテゴリ別集計
+  const categoryTotals = dashboard.reduce<Record<StockCategory, number>>(
+    (acc, d) => {
+      const cat  = getCategory(d.industry);
+      const cost = d.avg_purchase_price * d.total_shares;
+      acc[cat]  += cost;
+      return acc;
+    },
+    { defensive: 0, cyclical: 0, financial: 0, other: 0 }
+  );
+  const categoryOrder: StockCategory[] = ['defensive', 'cyclical', 'financial', 'other'];
+
   const totalDividend     = dashboard.reduce((s, d) => s + (d.dividend_income ?? 0), 0);
   const TAX_RATE          = 0.20315;  // 所得税15.315% + 住民税5%
   const totalDividendNet  = totalDividend * (1 - TAX_RATE);
@@ -129,6 +143,97 @@ export default function PortfolioPage() {
           value={`${stockCount} 銘柄`}
         />
       </div>
+
+      {/* カテゴリ別積み上げバー */}
+      {totalCost > 0 && (
+        <div className="category-bar-card">
+          <div className="category-bar-header">
+            <h3 className="pf-chart-title" style={{ marginBottom: 0 }}>銘柄区分</h3>
+            <button
+              className="cat-info-btn"
+              onClick={() => setShowCatInfo((v) => !v)}
+              title="カテゴリの説明を見る"
+            >
+              {showCatInfo ? '✕' : 'ℹ'}
+            </button>
+          </div>
+
+          {/* カテゴリ説明パネル */}
+          {showCatInfo && (
+            <div className="cat-info-panel">
+              {([
+                {
+                  cat: 'defensive' as const,
+                  desc: '景気変動の影響を受けにくく、不況時も安定した収益を維持しやすい銘柄群。生活必需品・医療・インフラ系が中心。',
+                  industries: '食料品・医薬品・電気ガス・陸運・情報通信・小売・水産農林・空運 など',
+                },
+                {
+                  cat: 'cyclical' as const,
+                  desc: '景気拡大期に大きく伸び、後退期には業績が落ちやすい銘柄群。製造業・資源・建設・輸出系が中心。',
+                  industries: '鉄鋼・化学・機械・自動車・建設・不動産・海運・電気機器・卸売 など',
+                },
+                {
+                  cat: 'financial' as const,
+                  desc: '金融政策・金利動向の影響を強く受ける銘柄群。景気敏感の性質も持つが独立カテゴリとして分類。',
+                  industries: '銀行・証券・保険・その他金融',
+                },
+                {
+                  cat: 'other' as const,
+                  desc: '上記3区分に分類されない業種。業種情報が未設定の銘柄もここに含まれます。',
+                  industries: 'その他',
+                },
+              ] as const).map(({ cat, desc, industries }) => {
+                const m = CATEGORY_META[cat];
+                return (
+                  <div key={cat} className="cat-info-row">
+                    <span className="category-badge"
+                      style={{ color: m.color, background: m.bg, borderColor: m.color, flexShrink: 0 }}>
+                      {m.short === '—' ? m.label : `${m.short} ${m.label}`}
+                    </span>
+                    <div className="cat-info-text">
+                      <p className="cat-info-desc">{desc}</p>
+                      <p className="cat-info-industries">対象業種：{industries}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          <div className="category-bar-track">
+            {categoryOrder.map((cat) => {
+              const pct = (categoryTotals[cat] / totalCost) * 100;
+              if (pct < 0.1) return null;
+              const m = CATEGORY_META[cat];
+              return (
+                <div
+                  key={cat}
+                  className="category-bar-seg"
+                  style={{ width: `${pct}%`, background: m.color }}
+                  title={`${m.label}: ${pct.toFixed(1)}%`}
+                />
+              );
+            })}
+          </div>
+          <div className="category-bar-legend">
+            {categoryOrder.map((cat) => {
+              const pct = (categoryTotals[cat] / totalCost) * 100;
+              const m   = CATEGORY_META[cat];
+              const cnt = dashboard.filter((d) => getCategory(d.industry) === cat).length;
+              return (
+                <div key={cat} className="category-legend-item">
+                  <span className="category-legend-dot" style={{ background: m.color }} />
+                  <span className="category-legend-label">{m.label}</span>
+                  <span className="category-legend-pct" style={{ color: m.color }}>
+                    {pct.toFixed(1)}%
+                  </span>
+                  <span className="category-legend-count">{cnt} 銘柄</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* グラフ行: 上下2段レイアウト */}
       {dashboard.length > 0 && (

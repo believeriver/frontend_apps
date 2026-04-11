@@ -5,6 +5,7 @@ import { RootState, AppDispatch } from '../../store';
 import { deletePosition, loadPortfolio } from '../../store/portfolioSlice';
 import { DashboardItem, PortfolioItem, PortfolioRecord } from '../../types';
 import PositionModal from './PositionModal';
+import { getCategory, CATEGORY_META } from '../../utils/stockCategory';
 
 interface Props {
   dashboard: DashboardItem[];
@@ -46,6 +47,7 @@ export default function HoldingsTable({ dashboard, items, currentPrices }: Props
     const value        = currentPrice != null ? currentPrice * d.total_shares : null;
     const gain         = value != null ? value - cost : null;
     const gainPct      = gain != null && cost > 0 ? (gain / cost) * 100 : null;
+    const category = getCategory(d.industry);
     return {
       ...d,
       records: items.find((it) => it.company_code === d.company_code)?.records ?? [],
@@ -54,6 +56,7 @@ export default function HoldingsTable({ dashboard, items, currentPrices }: Props
       value,
       gain,
       gainPct,
+      category,
     };
   });
 
@@ -65,6 +68,7 @@ export default function HoldingsTable({ dashboard, items, currentPrices }: Props
             <tr>
               <th style={{ width: 32 }} />
               <th className="col-name">銘柄</th>
+              <th>区分</th>
               <th>業種</th>
               <th>保有株数</th>
               <th>平均取得単価</th>
@@ -103,6 +107,17 @@ export default function HoldingsTable({ dashboard, items, currentPrices }: Props
                         <span className="td-code" style={{ marginRight: 8 }}>{d.company_code}</span>
                         {d.company_name}
                       </span>
+                    </td>
+                    <td>
+                      {(() => {
+                        const m = CATEGORY_META[d.category];
+                        return (
+                          <span className="category-badge"
+                            style={{ color: m.color, background: m.bg, borderColor: m.color }}>
+                            {m.short === '—' ? m.label : `${m.short} ${m.label}`}
+                          </span>
+                        );
+                      })()}
                     </td>
                     <td>
                       {d.industry
@@ -152,7 +167,7 @@ export default function HoldingsTable({ dashboard, items, currentPrices }: Props
                   {isOpen && d.records.map((rec) => (
                     <tr key={rec.id} className="pf-record-row">
                       <td />
-                      <td colSpan={2} style={{ paddingLeft: 32, color: 'var(--text-muted)', fontSize: '0.82rem' }}>
+                      <td colSpan={3} style={{ paddingLeft: 32, color: 'var(--text-muted)', fontSize: '0.82rem' }}>
                         📅 {rec.purchased_at}
                         {rec.memo && <span style={{ marginLeft: 8, color: 'var(--text-dim)' }}>({rec.memo})</span>}
                       </td>

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useTheme } from '../hooks/useTheme';
 
 // ── GitHub SVG Icon ──────────────────────────────────────────
 function GitHubIcon() {
@@ -44,6 +45,7 @@ const APPS = [
 
 // ── Landing Page ──────────────────────────────────────────────
 export default function LandingPage() {
+  const { theme, toggle } = useTheme();
   return (
     <div className="lp-root">
       {/* 背景装飾 */}
@@ -55,15 +57,20 @@ export default function LandingPage() {
       {/* ナビ */}
       <nav className="lp-nav">
         <span className="lp-nav-brand">◈ believeriver</span>
-        <a
-          href="https://github.com/believeriver"
-          target="_blank"
-          rel="noreferrer"
-          className="lp-nav-github"
-        >
-          <GitHubIcon />
-          <span>GitHub</span>
-        </a>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <button className="theme-toggle" onClick={toggle} title={theme === 'dark' ? 'ライトモードへ' : 'ダークモードへ'}>
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </button>
+          <a
+            href="https://github.com/believeriver"
+            target="_blank"
+            rel="noreferrer"
+            className="lp-nav-github"
+          >
+            <GitHubIcon />
+            <span>GitHub</span>
+          </a>
+        </div>
       </nav>
 
       {/* ヒーロー */}

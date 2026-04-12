@@ -4,6 +4,7 @@ import { Provider, useDispatch, useSelector } from 'react-redux';
 import { store, RootState, AppDispatch } from './store';
 import { restoreSession, logout } from './store/authSlice';
 import SearchBar from './components/SearchBar';
+import { useTheme } from './hooks/useTheme';
 
 // Landing
 import LandingPage from './pages/LandingPage';
@@ -85,6 +86,16 @@ function AuthControl() {
   );
 }
 
+// ── テーマ切替ボタン ──────────────────────────────────────
+function ThemeToggle() {
+  const { theme, toggle } = useTheme();
+  return (
+    <button className="theme-toggle" onClick={toggle} title={theme === 'dark' ? 'ライトモードへ' : 'ダークモードへ'}>
+      {theme === 'dark' ? '☀️' : '🌙'}
+    </button>
+  );
+}
+
 // ── レイアウト ────────────────────────────────────────────
 function Layout({ children }: { children: React.ReactNode }) {
   const location  = useLocation();
@@ -99,6 +110,7 @@ function Layout({ children }: { children: React.ReactNode }) {
         </Link>
         <AppSwitcher />
         {!isEditor && <SearchBar />}
+        <ThemeToggle />
         <AuthControl />
       </header>
       <main className="app-main">{children}</main>

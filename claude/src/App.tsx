@@ -1,21 +1,48 @@
 import { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Link, NavLink, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { store, RootState, AppDispatch } from './store';
 import { restoreSession, logout } from './store/authSlice';
 import SearchBar from './components/SearchBar';
-import HomePage from './pages/HomePage';
-import StockPage from './pages/StockPage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
+
+// IR Dashboard pages
+import HomePage      from './pages/HomePage';
+import StockPage     from './pages/StockPage';
+import LoginPage     from './pages/LoginPage';
+import RegisterPage  from './pages/RegisterPage';
 import PortfolioPage from './pages/PortfolioPage';
+
+// TechBlog pages
+import TechlogListPage   from './pages/techlog/TechlogListPage';
+import TechlogDetailPage from './pages/techlog/TechlogDetailPage';
+import TechlogEditorPage from './pages/techlog/TechlogEditorPage';
+import TechlogMyPage     from './pages/techlog/TechlogMyPage';
+
 import './index.css';
 
-// ── ヘッダー内の認証コントロール ────────────────────────────
+// ── アプリ切替タブ ────────────────────────────────────────
+function AppSwitcher() {
+  const location = useLocation();
+  const isTechlog = location.pathname.startsWith('/techlog');
+  return (
+    <div className="app-switcher">
+      <NavLink to="/" end className={`app-tab ${!isTechlog ? 'active' : ''}`}>
+        📈 IR Dashboard
+      </NavLink>
+      <NavLink to="/techlog" className={`app-tab ${isTechlog ? 'active' : ''}`}>
+        ✍️ TechBlog
+      </NavLink>
+    </div>
+  );
+}
+
+// ── 認証コントロール ──────────────────────────────────────
 function AuthControl() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { email, accessToken } = useSelector((s: RootState) => s.auth);
+  const isTechlog = location.pathname.startsWith('/techlog');
 
   const handleLogout = async () => {
     await dispatch(logout());
@@ -25,12 +52,22 @@ function AuthControl() {
   if (accessToken) {
     return (
       <div className="auth-control">
-        <NavLink
-          to="/portfolio"
-          className={({ isActive }) => `auth-nav-link pf-nav-link ${isActive ? 'active' : ''}`}
-        >
-          ポートフォリオ
-        </NavLink>
+        {!isTechlog && (
+          <NavLink
+            to="/portfolio"
+            className={({ isActive }) => `auth-nav-link pf-nav-link ${isActive ? 'active' : ''}`}
+          >
+            ポートフォリオ
+          </NavLink>
+        )}
+        {isTechlog && (
+          <NavLink
+            to="/techlog/my"
+            className={({ isActive }) => `auth-nav-link pf-nav-link ${isActive ? 'active' : ''}`}
+          >
+            マイ記事
+          </NavLink>
+        )}
         <span className="auth-user">{email ?? 'ログイン中'}</span>
         <button className="auth-logout-btn" onClick={handleLogout}>ログアウト</button>
       </div>
@@ -45,24 +82,35 @@ function AuthControl() {
   );
 }
 
-// ── レイアウト ───────────────────────────────────────────────
+// ── レイアウト ────────────────────────────────────────────
 function Layout({ children }: { children: React.ReactNode }) {
+  const location  = useLocation();
+  const isTechlog = location.pathname.startsWith('/techlog');
+  const isEditor  = location.pathname.includes('/new') || location.pathname.includes('/edit');
+
   return (
     <div className="app">
       <header className="app-header">
-        <Link to="/" className="logo">IR Dashboard</Link>
-        <SearchBar />
+        <Link to="/" className="logo">
+          {isTechlog ? 'TechBlog' : 'IR Dashboard'}
+        </Link>
+        <AppSwitcher />
+        {!isEditor && <SearchBar />}
         <AuthControl />
       </header>
       <main className="app-main">{children}</main>
       <footer className="app-footer">
-        <p>データは Django API より取得。投資判断の参考情報としてご利用ください。</p>
+        <p>
+          {isTechlog
+            ? 'TechBlog — 技術ブログプラットフォーム'
+            : 'データは Django API より取得。投資判断の参考情報としてご利用ください。'}
+        </p>
       </footer>
     </div>
   );
 }
 
-// ── アプリ本体 ───────────────────────────────────────────────
+// ── アプリ本体 ────────────────────────────────────────────
 function AppInner() {
   const dispatch = useDispatch<AppDispatch>();
 
@@ -74,11 +122,19 @@ function AppInner() {
     <BrowserRouter>
       <Layout>
         <Routes>
-          <Route path="/"           element={<HomePage />} />
-          <Route path="/stock/:code" element={<StockPage />} />
-          <Route path="/portfolio"  element={<PortfolioPage />} />
-          <Route path="/login"      element={<LoginPage />} />
-          <Route path="/register"   element={<RegisterPage />} />
+          {/* IR Dashboard */}
+          <Route path="/"             element={<HomePage />} />
+          <Route path="/stock/:code"  element={<StockPage />} />
+          <Route path="/portfolio"    element={<PortfolioPage />} />
+          <Route path="/login"        element={<LoginPage />} />
+          <Route path="/register"     element={<RegisterPage />} />
+
+          {/* TechBlog */}
+          <Route path="/techlog"           element={<TechlogListPage />} />
+          <Route path="/techlog/my"        element={<TechlogMyPage />} />
+          <Route path="/techlog/new"       element={<TechlogEditorPage />} />
+          <Route path="/techlog/:uuid"     element={<TechlogDetailPage />} />
+          <Route path="/techlog/:uuid/edit" element={<TechlogEditorPage />} />
         </Routes>
       </Layout>
     </BrowserRouter>

@@ -4,6 +4,7 @@ import financeReducer     from './financeSlice';
 import companyListReducer from './companyListSlice';
 import authReducer        from './authSlice';
 import portfolioReducer   from './portfolioSlice';
+import techlogReducer     from './techlogSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     companyList: companyListReducer,
     auth:        authReducer,
     portfolio:   portfolioReducer,
+    techlog:     techlogReducer,
   },
 });
 

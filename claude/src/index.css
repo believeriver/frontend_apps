@@ -1601,6 +1601,62 @@ button { font-family: inherit; }
   height: auto;
 }
 
+/* :::note ブロック */
+.md-note {
+  margin: 1.2em 0;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border-left: 4px solid;
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+.md-note p:first-child { margin-top: 0; }
+.md-note p:last-child  { margin-bottom: 0; }
+.md-note-info {
+  background: rgba(88, 166, 255, 0.08);
+  border-color: #58a6ff;
+  color: #cdd9e5;
+}
+.md-note-warn {
+  background: rgba(210, 153, 34, 0.1);
+  border-color: #d29922;
+  color: #cdd9e5;
+}
+.md-note-alert {
+  background: rgba(248, 81, 73, 0.08);
+  border-color: #f85149;
+  color: #cdd9e5;
+}
+
+/* <details> スタイル */
+.tl-markdown-body details {
+  margin: 1em 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-main);
+  overflow: hidden;
+}
+.tl-markdown-body summary {
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--bg-hover);
+  user-select: none;
+  list-style: none;
+}
+.tl-markdown-body summary::before {
+  content: '▶ ';
+  font-size: 0.75em;
+  opacity: 0.7;
+}
+.tl-markdown-body details[open] summary::before {
+  content: '▼ ';
+}
+.tl-markdown-body details > *:not(summary) {
+  padding: 12px 16px;
+}
+
 /* コメント */
 .tl-comments {
   background: var(--bg-card);
@@ -1861,4 +1917,279 @@ button { font-family: inherit; }
 }
 .tl-status-badge.draft {
   color: var(--text-dim); background: var(--bg-hover); border-color: var(--border);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Landing Page
+   ═══════════════════════════════════════════════════════════ */
+
+.lp-root {
+  position: relative;
+  min-height: 100vh;
+  background: #0d1117;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── 背景装飾 ── */
+.lp-grid {
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(139,148,158,0.12) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.lp-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: 0;
+  animation: lpOrbFloat 10s ease-in-out infinite;
+}
+.lp-orb-1 {
+  width: 500px; height: 500px;
+  background: rgba(88,166,255,0.12);
+  top: -180px; left: -150px;
+}
+.lp-orb-2 {
+  width: 400px; height: 400px;
+  background: rgba(188,140,255,0.10);
+  bottom: 0; right: -120px;
+  animation-delay: -4s;
+}
+.lp-orb-3 {
+  width: 280px; height: 280px;
+  background: rgba(63,185,80,0.08);
+  bottom: 200px; left: 10%;
+  animation-delay: -7s;
+}
+@keyframes lpOrbFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%       { transform: translateY(-30px) scale(1.05); }
+}
+
+/* ── ナビ ── */
+.lp-nav {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 960px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 32px;
+}
+.lp-nav-brand {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+.lp-nav-github {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  text-decoration: none;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+.lp-nav-github:hover {
+  color: var(--text);
+  border-color: #8b949e;
+  background: var(--bg-hover);
+  text-decoration: none;
+}
+
+/* ── ヒーロー ── */
+.lp-hero {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 48px 32px 40px;
+}
+.lp-eyebrow {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #58a6ff;
+  background: rgba(88,166,255,0.1);
+  border: 1px solid rgba(88,166,255,0.25);
+  border-radius: 20px;
+  padding: 4px 14px;
+  margin-bottom: 24px;
+}
+.lp-title {
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+.lp-title-grad {
+  background: linear-gradient(135deg, #58a6ff 0%, #bc8cff 45%, #3fb950 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 200% 200%;
+  animation: lpGradShift 6s ease infinite;
+}
+@keyframes lpGradShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.lp-tagline {
+  font-size: 1.15rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.lp-sub {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+}
+
+/* ── アプリカード ── */
+.lp-cards {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 960px;
+  padding: 0 32px 64px;
+}
+
+.lp-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: rgba(22,27,34,0.8);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 24px;
+  text-decoration: none;
+  overflow: hidden;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  backdrop-filter: blur(8px);
+}
+.lp-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--lc-border, var(--border));
+  box-shadow: 0 0 40px var(--lc-glow, transparent), 0 12px 40px rgba(0,0,0,0.5);
+  text-decoration: none;
+}
+/* カード内シャイン */
+.lc-shine {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(600px circle at var(--x,50%) var(--y,50%), rgba(255,255,255,0.04), transparent 40%);
+  pointer-events: none;
+  border-radius: inherit;
+}
+/* Coming Soon */
+.lp-card-soon {
+  opacity: 0.45;
+  cursor: default;
+  border-style: dashed;
+}
+.lp-card-soon:hover {
+  transform: none;
+  border-color: var(--border);
+  box-shadow: none;
+}
+
+.lc-icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+.lp-card:hover .lc-icon-wrap {
+  background: rgba(255,255,255,0.06);
+  border-color: var(--lc-border, var(--border));
+}
+
+.lc-body { flex: 1; }
+.lc-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.lp-card:hover .lc-title { color: var(--lc-color, var(--text)); }
+
+.lc-desc {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin-bottom: 12px;
+}
+.lc-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.lc-tag {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 2px 8px;
+}
+.lp-card:hover .lc-tag {
+  border-color: var(--lc-border, var(--border));
+  color: var(--lc-color, var(--text-dim));
+}
+
+.lc-arrow {
+  align-self: flex-end;
+  font-size: 1.2rem;
+  color: var(--text-dim);
+  transition: transform 0.2s, color 0.2s;
+}
+.lp-card:hover .lc-arrow {
+  transform: translateX(4px);
+  color: var(--lc-color, var(--text));
+}
+
+/* ── フッター ── */
+.lp-footer {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 0 0 36px;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+.lp-footer a {
+  color: var(--text-dim);
+  text-decoration: none;
+}
+.lp-footer a:hover { color: var(--text-muted); }
+
+/* ── レスポンシブ ── */
+@media (max-width: 600px) {
+  .lp-nav    { padding: 16px 20px; }
+  .lp-hero   { padding: 32px 20px 28px; }
+  .lp-cards  { padding: 0 20px 48px; }
 }

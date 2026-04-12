@@ -5,6 +5,9 @@ import { store, RootState, AppDispatch } from './store';
 import { restoreSession, logout } from './store/authSlice';
 import SearchBar from './components/SearchBar';
 
+// Landing
+import LandingPage from './pages/LandingPage';
+
 // IR Dashboard pages
 import HomePage      from './pages/HomePage';
 import StockPage     from './pages/StockPage';
@@ -26,7 +29,7 @@ function AppSwitcher() {
   const isTechlog = location.pathname.startsWith('/techlog');
   return (
     <div className="app-switcher">
-      <NavLink to="/" end className={`app-tab ${!isTechlog ? 'active' : ''}`}>
+      <NavLink to="/ir" className={`app-tab ${!isTechlog ? 'active' : ''}`}>
         📈 IR Dashboard
       </NavLink>
       <NavLink to="/techlog" className={`app-tab ${isTechlog ? 'active' : ''}`}>
@@ -91,7 +94,7 @@ function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="app">
       <header className="app-header">
-        <Link to="/" className="logo">
+        <Link to="/" className="logo" title="ポータルへ戻る">
           {isTechlog ? 'TechBlog' : 'IR Dashboard'}
         </Link>
         <AppSwitcher />
@@ -110,6 +113,40 @@ function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
+// ── ルーティング（Landing は Layout 外） ─────────────────────
+function InnerRoutes() {
+  const location = useLocation();
+  const isLanding = location.pathname === '/';
+
+  if (isLanding) {
+    return (
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+      </Routes>
+    );
+  }
+
+  return (
+    <Layout>
+      <Routes>
+        {/* IR Dashboard */}
+        <Route path="/ir"            element={<HomePage />} />
+        <Route path="/stock/:code"   element={<StockPage />} />
+        <Route path="/portfolio"     element={<PortfolioPage />} />
+        <Route path="/login"         element={<LoginPage />} />
+        <Route path="/register"      element={<RegisterPage />} />
+
+        {/* TechBlog */}
+        <Route path="/techlog"            element={<TechlogListPage />} />
+        <Route path="/techlog/my"         element={<TechlogMyPage />} />
+        <Route path="/techlog/new"        element={<TechlogEditorPage />} />
+        <Route path="/techlog/:uuid"      element={<TechlogDetailPage />} />
+        <Route path="/techlog/:uuid/edit" element={<TechlogEditorPage />} />
+      </Routes>
+    </Layout>
+  );
+}
+
 // ── アプリ本体 ────────────────────────────────────────────
 function AppInner() {
   const dispatch = useDispatch<AppDispatch>();
@@ -120,23 +157,7 @@ function AppInner() {
 
   return (
     <BrowserRouter>
-      <Layout>
-        <Routes>
-          {/* IR Dashboard */}
-          <Route path="/"             element={<HomePage />} />
-          <Route path="/stock/:code"  element={<StockPage />} />
-          <Route path="/portfolio"    element={<PortfolioPage />} />
-          <Route path="/login"        element={<LoginPage />} />
-          <Route path="/register"     element={<RegisterPage />} />
-
-          {/* TechBlog */}
-          <Route path="/techlog"           element={<TechlogListPage />} />
-          <Route path="/techlog/my"        element={<TechlogMyPage />} />
-          <Route path="/techlog/new"       element={<TechlogEditorPage />} />
-          <Route path="/techlog/:uuid"     element={<TechlogDetailPage />} />
-          <Route path="/techlog/:uuid/edit" element={<TechlogEditorPage />} />
-        </Routes>
-      </Layout>
+      <InnerRoutes />
     </BrowserRouter>
   );
 }

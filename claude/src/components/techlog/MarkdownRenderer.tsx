@@ -3,9 +3,19 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import rehypeRaw from 'rehype-raw';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import 'katex/dist/katex.min.css';
+
+// ── :::note 前処理 ────────────────────────────────────────
+function preprocessNote(src: string): string {
+  return src.replace(
+    /:::note\s+(info|warn|alert)\n([\s\S]*?):::/g,
+    (_, type: string, body: string) =>
+      `<div class="md-note md-note-${type}">\n\n${body.trim()}\n\n</div>`,
+  );
+}
 
 // ── Mermaid ブロック ─────────────────────────────────────────
 function MermaidBlock({ code }: { code: string }) {
@@ -44,15 +54,70 @@ function MermaidBlock({ code }: { code: string }) {
   return <div ref={ref} className="tl-mermaid" />;
 }
 
+// ── diff ブロック ──────────────────────────────────────────
+function DiffBlock({ code }: { code: string }) {
+  const lines = code.split('\n');
+  return (
+    <div style={{
+      margin: '1em 0',
+      borderRadius: '8px',
+      fontSize: '0.88rem',
+      border: '1px solid #30363d',
+      background: '#0d1117',
+      overflow: 'auto',
+      fontFamily: "'SFMono-Regular', Consolas, monospace",
+    }}>
+      {lines.map((line, i) => {
+        let bg = 'transparent';
+        let color = '#e6edf3';
+        let prefix = '';
+        if (line.startsWith('+') && !line.startsWith('+++')) {
+          bg = 'rgba(46,160,67,0.18)';
+          color = '#7ee787';
+          prefix = '+';
+        } else if (line.startsWith('-') && !line.startsWith('---')) {
+          bg = 'rgba(248,81,73,0.18)';
+          color = '#ff7b72';
+          prefix = '-';
+        } else if (line.startsWith('@@')) {
+          bg = 'rgba(121,192,255,0.1)';
+          color = '#79c0ff';
+        } else if (line.startsWith('+++') || line.startsWith('---')) {
+          color = '#8b949e';
+        }
+        return (
+          <div
+            key={i}
+            style={{
+              display: 'block',
+              background: bg,
+              color,
+              padding: '0 16px',
+              lineHeight: '1.6',
+              whiteSpace: 'pre',
+              borderLeft: prefix === '+'
+                ? '3px solid rgba(46,160,67,0.6)'
+                : prefix === '-'
+                  ? '3px solid rgba(248,81,73,0.6)'
+                  : '3px solid transparent',
+            }}
+          >
+            {line || ' '}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // ── コードブロック ─────────────────────────────────────────
 function CodeBlock({ className, children }: { className?: string; children?: React.ReactNode }) {
   const match   = /language-(\w+)/.exec(className ?? '');
   const lang    = match?.[1] ?? '';
   const code    = String(children ?? '').replace(/\n$/, '');
 
-  if (lang === 'mermaid') {
-    return <MermaidBlock code={code} />;
-  }
+  if (lang === 'mermaid')        return <MermaidBlock code={code} />;
+  if (lang.startsWith('diff'))   return <DiffBlock code={code} />;
 
   return (
     <SyntaxHighlighter
@@ -77,10 +142,11 @@ interface Props {
 }
 
 export default function MarkdownRenderer({ content }: Props) {
+  const processed = preprocessNote(content);
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm, remarkMath]}
-      rehypePlugins={[rehypeKatex]}
+      rehypePlugins={[rehypeRaw, rehypeKatex]}
       components={{
         code({ className, children, ...props }) {
           const isBlock = /language-/.test(className ?? '');
@@ -106,7 +172,7 @@ export default function MarkdownRenderer({ content }: Props) {
         },
       }}
     >
-      {content}
+      {processed}
     </ReactMarkdown>
   );
 }

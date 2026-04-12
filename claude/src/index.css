@@ -1585,6 +1585,22 @@ button { font-family: inherit; }
 .tl-markdown-body td { padding: 8px 12px; border: 1px solid var(--border); }
 .tl-markdown-body img { max-width: 100%; border-radius: 6px; }
 
+/* Mermaid ダイアグラム */
+.tl-mermaid {
+  display: flex;
+  justify-content: center;
+  margin: 1.2em 0;
+  padding: 16px;
+  background: #161b22;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow-x: auto;
+}
+.tl-mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
 /* コメント */
 .tl-comments {
   background: var(--bg-card);

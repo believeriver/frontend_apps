@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import { RootState } from '../../store';
+import MarkdownRenderer from '../../components/techlog/MarkdownRenderer';
 import { apiGetPost, apiCreatePost, apiUpdatePost, apiGetCategories, apiGetTags } from '../../api/techlog';
 import { TechCategory, TechTag, PostStatus } from '../../types/techlog';
 
@@ -136,7 +135,7 @@ export default function TechlogEditorPage() {
           {preview ? (
             <div className="tl-markdown-body tl-preview-pane">
               {content ? (
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+                <MarkdownRenderer content={content} />
               ) : (
                 <p style={{ color: 'var(--text-dim)' }}>本文を入力するとここにプレビューが表示されます</p>
               )}

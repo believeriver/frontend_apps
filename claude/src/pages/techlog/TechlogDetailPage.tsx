@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import { RootState, AppDispatch } from '../../store';
+import MarkdownRenderer from '../../components/techlog/MarkdownRenderer';
 import { loadPostDetail, clearDetail, updateLike, addComment, updateComment, removeComment } from '../../store/techlogSlice';
 import { apiLikePost, apiUnlikePost, apiAddComment, apiUpdateComment, apiDeleteComment } from '../../api/techlog';
 
@@ -125,9 +124,7 @@ export default function TechlogDetailPage() {
 
         {/* 本文 */}
         <div className="tl-markdown-body">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {detail.content}
-          </ReactMarkdown>
+          <MarkdownRenderer content={detail.content} />
         </div>
 
         {/* コメント */}

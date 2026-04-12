@@ -149,7 +149,9 @@ export default function MarkdownRenderer({ content }: Props) {
       rehypePlugins={[rehypeRaw, rehypeKatex]}
       components={{
         code({ className, children, ...props }) {
-          const isBlock = /language-/.test(className ?? '');
+          const codeStr = String(children ?? '');
+          // language-xxx クラスがある OR 改行を含む → ブロックコード
+          const isBlock = /language-/.test(className ?? '') || codeStr.includes('\n');
           if (isBlock) {
             return <CodeBlock className={className}>{children}</CodeBlock>;
           }

@@ -2193,3 +2193,49 @@ button { font-family: inherit; }
   .lp-hero   { padding: 32px 20px 28px; }
   .lp-cards  { padding: 0 20px 48px; }
 }
+/* ── ページネーション ── */
+.tl-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 32px 0 16px;
+  flex-wrap: wrap;
+}
+.tl-page-btn {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.tl-page-btn:hover:not(:disabled) {
+  background: var(--bg-hover);
+  border-color: var(--accent);
+  color: var(--text);
+}
+.tl-page-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 700;
+}
+.tl-page-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.tl-page-ellipsis {
+  color: var(--text-dim);
+  padding: 0 4px;
+  line-height: 36px;
+}
+.tl-page-info {
+  margin-left: 8px;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}

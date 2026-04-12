@@ -43,6 +43,8 @@ function ArticleCard({ post }: { post: TechPostSummary }) {
   );
 }
 
+const PER_PAGE = 20;
+
 export default function TechlogListPage() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
@@ -58,6 +60,7 @@ export default function TechlogListPage() {
     searchParams.get('tag') ? Number(searchParams.get('tag')) : undefined
   );
   const [ordering, setOrdering] = useState<'views' | 'likes' | 'created'>('created');
+  const [page,     setPage]     = useState(1);
 
   useEffect(() => {
     dispatch(loadMeta());
@@ -70,6 +73,7 @@ export default function TechlogListPage() {
       tag:      tagId,
       ordering,
     }));
+    setPage(1);
   }, [dispatch, search, catId, tagId, ordering]);
 
   useEffect(() => {
@@ -85,6 +89,10 @@ export default function TechlogListPage() {
     setSearchParams(p);
     fetchPosts();
   };
+
+  // ページネーション計算
+  const totalPages  = Math.ceil(posts.length / PER_PAGE);
+  const pagedPosts  = posts.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
   return (
     <div className="tl-list-layout">
@@ -170,9 +178,58 @@ export default function TechlogListPage() {
         ) : posts.length === 0 ? (
           <div className="tl-empty">記事がまだありません</div>
         ) : (
-          <div className="tl-card-list">
-            {posts.map((p) => <ArticleCard key={p.id} post={p} />)}
-          </div>
+          <>
+            <div className="tl-card-list">
+              {pagedPosts.map((p) => <ArticleCard key={p.id} post={p} />)}
+            </div>
+
+            {/* ページネーション */}
+            {totalPages > 1 && (
+              <div className="tl-pagination">
+                <button
+                  className="tl-page-btn"
+                  onClick={() => { setPage(1); window.scrollTo(0, 0); }}
+                  disabled={page === 1}
+                >«</button>
+                <button
+                  className="tl-page-btn"
+                  onClick={() => { setPage(p => p - 1); window.scrollTo(0, 0); }}
+                  disabled={page === 1}
+                >‹</button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .filter(n => n === 1 || n === totalPages || Math.abs(n - page) <= 2)
+                  .reduce<(number | '...')[]>((acc, n, idx, arr) => {
+                    if (idx > 0 && n - (arr[idx - 1] as number) > 1) acc.push('...');
+                    acc.push(n);
+                    return acc;
+                  }, [])
+                  .map((n, i) =>
+                    n === '...'
+                      ? <span key={`ellipsis-${i}`} className="tl-page-ellipsis">…</span>
+                      : <button
+                          key={n}
+                          className={`tl-page-btn ${page === n ? 'active' : ''}`}
+                          onClick={() => { setPage(n as number); window.scrollTo(0, 0); }}
+                        >{n}</button>
+                  )
+                }
+
+                <button
+                  className="tl-page-btn"
+                  onClick={() => { setPage(p => p + 1); window.scrollTo(0, 0); }}
+                  disabled={page === totalPages}
+                >›</button>
+                <button
+                  className="tl-page-btn"
+                  onClick={() => { setPage(totalPages); window.scrollTo(0, 0); }}
+                  disabled={page === totalPages}
+                >»</button>
+
+                <span className="tl-page-info">{page} / {totalPages} ページ</span>
+              </div>
+            )}
+          </>
         )}
       </main>
     </div>

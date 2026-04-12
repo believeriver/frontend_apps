@@ -8,6 +8,56 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import 'katex/dist/katex.min.css';
 
+// ── 言語自動検出 ──────────────────────────────────────────
+// よく使う言語に絞ることでバンドルサイズを抑える
+import hljs from 'highlight.js/lib/core';
+import hljsPython     from 'highlight.js/lib/languages/python';
+import hljsBash       from 'highlight.js/lib/languages/bash';
+import hljsJavaScript from 'highlight.js/lib/languages/javascript';
+import hljsTypeScript from 'highlight.js/lib/languages/typescript';
+import hljsSql        from 'highlight.js/lib/languages/sql';
+import hljsJson       from 'highlight.js/lib/languages/json';
+import hljsYaml       from 'highlight.js/lib/languages/yaml';
+import hljsHtml       from 'highlight.js/lib/languages/xml';
+import hljsCss        from 'highlight.js/lib/languages/css';
+import hljsGo         from 'highlight.js/lib/languages/go';
+import hljsRust       from 'highlight.js/lib/languages/rust';
+import hljsCpp        from 'highlight.js/lib/languages/cpp';
+import hljsJava       from 'highlight.js/lib/languages/java';
+import hljsIni        from 'highlight.js/lib/languages/ini';
+
+hljs.registerLanguage('python',     hljsPython);
+hljs.registerLanguage('bash',       hljsBash);
+hljs.registerLanguage('shell',      hljsBash);
+hljs.registerLanguage('javascript', hljsJavaScript);
+hljs.registerLanguage('typescript', hljsTypeScript);
+hljs.registerLanguage('sql',        hljsSql);
+hljs.registerLanguage('json',       hljsJson);
+hljs.registerLanguage('yaml',       hljsYaml);
+hljs.registerLanguage('html',       hljsHtml);
+hljs.registerLanguage('css',        hljsCss);
+hljs.registerLanguage('go',         hljsGo);
+hljs.registerLanguage('rust',       hljsRust);
+hljs.registerLanguage('cpp',        hljsCpp);
+hljs.registerLanguage('java',       hljsJava);
+hljs.registerLanguage('ini',        hljsIni);
+
+const DETECT_LANGS = [
+  'python', 'bash', 'javascript', 'typescript',
+  'sql', 'json', 'yaml', 'html', 'css',
+  'go', 'rust', 'cpp', 'java', 'ini',
+];
+
+function detectLanguage(code: string): string {
+  if (code.trim().length < 10) return 'text'; // 短すぎると誤検出
+  try {
+    const result = hljs.highlightAuto(code, DETECT_LANGS);
+    return result.language ?? 'text';
+  } catch {
+    return 'text';
+  }
+}
+
 // ── :::note 前処理 ────────────────────────────────────────
 function preprocessNote(src: string): string {
   return src.replace(
@@ -112,27 +162,43 @@ function DiffBlock({ code }: { code: string }) {
 
 // ── コードブロック ─────────────────────────────────────────
 function CodeBlock({ className, children }: { className?: string; children?: React.ReactNode }) {
-  const match   = /language-(\w+)/.exec(className ?? '');
-  const lang    = match?.[1] ?? '';
-  const code    = String(children ?? '').replace(/\n$/, '');
+  const match = /language-(\w+)/.exec(className ?? '');
+  const lang  = match?.[1] ?? '';
+  const code  = String(children ?? '').replace(/\n$/, '');
 
-  if (lang === 'mermaid')        return <MermaidBlock code={code} />;
-  if (lang.startsWith('diff'))   return <DiffBlock code={code} />;
+  if (lang === 'mermaid')      return <MermaidBlock code={code} />;
+  if (lang.startsWith('diff')) return <DiffBlock code={code} />;
+
+  // 言語が明示されていない場合は自動検出
+  const resolvedLang = lang || detectLanguage(code);
 
   return (
-    <SyntaxHighlighter
-      style={oneDark}
-      language={lang || 'text'}
-      PreTag="div"
-      customStyle={{
-        margin: '1em 0',
-        borderRadius: '8px',
-        fontSize: '0.88rem',
-        border: '1px solid #30363d',
-      }}
-    >
-      {code}
-    </SyntaxHighlighter>
+    <div style={{ position: 'relative' }}>
+      {/* 検出言語ラベル（言語未指定時のみ表示） */}
+      {!lang && resolvedLang !== 'text' && (
+        <span style={{
+          position: 'absolute', top: 8, right: 10,
+          fontSize: '0.7rem', color: '#8b949e',
+          fontFamily: 'monospace', zIndex: 1,
+          pointerEvents: 'none',
+        }}>
+          {resolvedLang} (auto)
+        </span>
+      )}
+      <SyntaxHighlighter
+        style={oneDark}
+        language={resolvedLang}
+        PreTag="div"
+        customStyle={{
+          margin: '1em 0',
+          borderRadius: '8px',
+          fontSize: '0.88rem',
+          border: '1px solid #30363d',
+        }}
+      >
+        {code}
+      </SyntaxHighlighter>
+    </div>
   );
 }
 

@@ -41,6 +41,17 @@ const APPS = [
     border: 'rgba(63,185,80,0.4)',
     disabled: false,
   },
+  {
+    to: '/blog',
+    icon: '📝',
+    title: 'Blog',
+    desc: '日記・ランニング・読書など日々の記録をまとめたエディトリアルブログ',
+    tags: ['journal', 'running', 'reading', 'note'],
+    color: '#d29922',
+    glow: 'rgba(210,153,34,0.25)',
+    border: 'rgba(210,153,34,0.4)',
+    disabled: false,
+  },
 ] as const;
 
 // ── Landing Page ──────────────────────────────────────────────

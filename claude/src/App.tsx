@@ -22,20 +22,25 @@ import TechlogDetailPage from './pages/techlog/TechlogDetailPage';
 import TechlogEditorPage from './pages/techlog/TechlogEditorPage';
 import TechlogMyPage     from './pages/techlog/TechlogMyPage';
 
+// Blog pages
+import BlogListPage    from './pages/blog/BlogListPage';
+import BlogDetailPage  from './pages/blog/BlogDetailPage';
+import BlogEditorPage  from './pages/blog/BlogEditorPage';
+import BlogManagePage  from './pages/blog/BlogManagePage';
+
 import './index.css';
 
 // ── アプリ切替タブ ────────────────────────────────────────
 function AppSwitcher() {
   const location = useLocation();
   const isTechlog = location.pathname.startsWith('/techlog');
+  const isBlog    = location.pathname.startsWith('/blog');
+  const isIR      = !isTechlog && !isBlog;
   return (
     <div className="app-switcher">
-      <NavLink to="/ir" className={`app-tab ${!isTechlog ? 'active' : ''}`}>
-        📈 IR Dashboard
-      </NavLink>
-      <NavLink to="/techlog" className={`app-tab ${isTechlog ? 'active' : ''}`}>
-        ✍️ TechBlog
-      </NavLink>
+      <NavLink to="/ir"      className={`app-tab ${isIR      ? 'active' : ''}`}>📈 IR</NavLink>
+      <NavLink to="/techlog" className={`app-tab ${isTechlog ? 'active' : ''}`}>✍️ Tech</NavLink>
+      <NavLink to="/blog"    className={`app-tab ${isBlog    ? 'active' : ''}`}>📝 Blog</NavLink>
     </div>
   );
 }
@@ -154,6 +159,13 @@ function InnerRoutes() {
         <Route path="/techlog/new"        element={<TechlogEditorPage />} />
         <Route path="/techlog/:uuid"      element={<TechlogDetailPage />} />
         <Route path="/techlog/:uuid/edit" element={<TechlogEditorPage />} />
+
+        {/* Blog */}
+        <Route path="/blog"            element={<BlogListPage />} />
+        <Route path="/blog/manage"     element={<BlogManagePage />} />
+        <Route path="/blog/new"        element={<BlogEditorPage />} />
+        <Route path="/blog/:uuid"      element={<BlogDetailPage />} />
+        <Route path="/blog/:uuid/edit" element={<BlogEditorPage />} />
       </Routes>
     </Layout>
   );

@@ -21,8 +21,9 @@ export default function BlogEditorPage() {
   const [content,  setContent]  = useState('');
   const [catId,    setCatId]    = useState<number | ''>('');
   const [tagIds,   setTagIds]   = useState<number[]>([]);
-  const [location, setLocation] = useState('');
-  const [status,   setStatus]   = useState<'draft' | 'published'>('draft');
+  const [location,    setLocation]    = useState('');
+  const [status,      setStatus]      = useState<'draft' | 'published'>('draft');
+  const [createdDate, setCreatedDate] = useState('');
   const [tab,      setTab]      = useState<Tab>('write');
   const [saving,   setSaving]   = useState(false);
   const [error,    setError]    = useState('');
@@ -45,6 +46,8 @@ export default function BlogEditorPage() {
       setTagIds(detail.tags.map(t => t.id));
       setLocation(detail.location ?? '');
       setStatus(detail.status === 'published' ? 'published' : 'draft');
+      // created_at を datetime-local 形式に変換
+      setCreatedDate(detail.created_at.slice(0, 16));
     }
   }, [isEdit, detail, uuid]);
 
@@ -109,12 +112,13 @@ export default function BlogEditorPage() {
     setSaving(true);
     try {
       const body = {
-        title: title.trim(),
-        content: content.trim(),
+        title:       title.trim(),
+        content:     content.trim(),
         category_id: catId as number,
-        tag_ids: tagIds,
-        location: location.trim() || undefined,
-        status: s,
+        tag_ids:     tagIds,
+        location:    location.trim() || undefined,
+        status:      s,
+        ...(createdDate ? { created_at: new Date(createdDate).toISOString() } : {}),
       };
       if (isEdit && uuid) {
         await apiUpdateBlogPost(uuid, body, accessToken);
@@ -194,6 +198,16 @@ export default function BlogEditorPage() {
               value={location}
               onChange={e => setLocation(e.target.value)}
               placeholder="例: Tokyo"
+            />
+          </div>
+
+          <div className="ble-field">
+            <label className="ble-label">投稿日時（任意）</label>
+            <input
+              type="datetime-local"
+              className="ble-input"
+              value={createdDate}
+              onChange={e => setCreatedDate(e.target.value)}
             />
           </div>
 

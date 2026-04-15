@@ -40,6 +40,7 @@ export interface BlogPostInput {
   tag_ids?: number[];
   location?: string;
   status: 'draft' | 'published';
+  created_at?: string;
 }
 
 export const apiCreateBlogPost = (body: BlogPostInput, token: string): Promise<BlogPostDetail> =>

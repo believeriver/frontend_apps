@@ -177,7 +177,8 @@ export default function LandingPage() {
             github.com/believeriver
           </a>{' '}
           · <Link to="/disclaimer">免責事項</Link>{' '}
-          · <Link to="/privacy">プライバシーポリシー</Link>
+          · <Link to="/privacy">プライバシーポリシー</Link>{' '}
+          · <Link to="/contact">お問い合わせ</Link>
         </p>
       </footer>
     </div>

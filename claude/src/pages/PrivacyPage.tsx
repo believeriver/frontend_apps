@@ -76,7 +76,7 @@ export default function PrivacyPage() {
           <h2>7. お問い合わせ</h2>
           <p>
             個人情報の取り扱いに関するお問い合わせは、
-            <a href="https://github.com/believeriver" target="_blank" rel="noreferrer">GitHub</a> よりご連絡ください。
+            <Link to="/contact">お問い合わせフォーム</Link> よりご連絡ください。
           </p>
         </section>
 

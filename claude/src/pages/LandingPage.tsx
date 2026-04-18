@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useTheme } from '../hooks/useTheme';
-import type { RootState } from '../store';
+import { logout } from '../store/authSlice';
+import type { RootState, AppDispatch } from '../store';
 
 // ── GitHub SVG Icon ──────────────────────────────────────────
 function GitHubIcon() {
@@ -71,8 +72,11 @@ const APPS = [
 // ── Landing Page ──────────────────────────────────────────────
 export default function LandingPage() {
   const { theme, toggle } = useTheme();
-  const { accessToken } = useSelector((s: RootState) => s.auth);
-  const visibleApps = APPS.filter(app => !('adminOnly' in app && app.adminOnly) || accessToken);
+  const dispatch = useDispatch<AppDispatch>();
+  const { accessToken, email, isSuperuser } = useSelector((s: RootState) => s.auth);
+  const visibleApps = APPS.filter(app => !('adminOnly' in app && app.adminOnly) || isSuperuser);
+
+  const handleLogout = () => { dispatch(logout()); };
   return (
     <div className="lp-root">
       {/* 背景装飾 */}
@@ -97,6 +101,17 @@ export default function LandingPage() {
             <GitHubIcon />
             <span>GitHub</span>
           </a>
+          {accessToken ? (
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <span className="lp-nav-user">{email ?? 'ログイン中'}</span>
+              <button className="lp-nav-logout" onClick={handleLogout}>ログアウト</button>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <Link to="/login"    className="lp-nav-login">ログイン</Link>
+              <Link to="/register" className="lp-nav-register">新規登録</Link>
+            </div>
+          )}
         </div>
       </nav>
 

@@ -12,6 +12,7 @@ export interface LoginResponse {
   refresh: string;
   email: string;
   username: string;
+  is_superuser: boolean;
 }
 
 export interface RegisterResponse {

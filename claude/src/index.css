@@ -78,6 +78,9 @@
 }
 [data-theme="light"] .lp-nav-brand { color: var(--text-muted); }
 [data-theme="light"] .lp-nav-github { color: var(--text-muted); }
+[data-theme="light"] .lp-nav-login { color: var(--text-muted); }
+[data-theme="light"] .lp-nav-logout { color: var(--text-muted); }
+[data-theme="light"] .lp-nav-user { color: var(--text-muted); }
 [data-theme="light"] .lp-tagline,
 [data-theme="light"] .lp-sub { color: var(--text-muted); }
 [data-theme="light"] .lp-footer { color: var(--text-dim); }
@@ -2095,6 +2098,55 @@ button { font-family: inherit; }
   border-color: #8b949e;
   background: var(--bg-hover);
   text-decoration: none;
+}
+.lp-nav-user {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  padding: 0 4px;
+}
+.lp-nav-login {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+.lp-nav-login:hover {
+  color: var(--text);
+  border-color: #8b949e;
+  background: var(--bg-hover);
+}
+.lp-nav-register {
+  font-size: 0.82rem;
+  color: #0d1117;
+  text-decoration: none;
+  padding: 5px 12px;
+  background: #58a6ff;
+  border: 1px solid #58a6ff;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: background 0.2s, border-color 0.2s;
+}
+.lp-nav-register:hover {
+  background: #79b8ff;
+  border-color: #79b8ff;
+}
+.lp-nav-logout {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+.lp-nav-logout:hover {
+  color: #f85149;
+  border-color: #f85149;
+  background: rgba(248,81,73,0.08);
 }
 
 /* ── ヒーロー ── */

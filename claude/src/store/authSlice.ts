@@ -2,10 +2,12 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { apiLogin, apiRegister, apiLogout, apiRefresh } from '../api/auth';
 
 const REFRESH_KEY = 'ir_refresh_token';
+const SUPERUSER_KEY = 'ir_is_superuser';
 
 interface AuthState {
   email: string | null;
   accessToken: string | null;
+  isSuperuser: boolean;
   loading: boolean;
   error: string | null;
 }
@@ -17,6 +19,7 @@ function savedRefresh(): string | null {
 const initialState: AuthState = {
   email: null,
   accessToken: null,
+  isSuperuser: localStorage.getItem(SUPERUSER_KEY) === 'true',
   loading: false,
   error: null,
 };
@@ -29,7 +32,8 @@ export const login = createAsyncThunk(
     try {
       const res = await apiLogin(email, password);
       localStorage.setItem(REFRESH_KEY, res.refresh);
-      return { email: res.email, accessToken: res.access };
+      localStorage.setItem(SUPERUSER_KEY, String(res.is_superuser));
+      return { email: res.email, accessToken: res.access, isSuperuser: res.is_superuser };
     } catch (e: any) {
       const msg =
         e.response?.data?.detail ||
@@ -76,6 +80,7 @@ export const logout = createAsyncThunk(
       }
     }
     localStorage.removeItem(REFRESH_KEY);
+    localStorage.removeItem(SUPERUSER_KEY);
   }
 );
 
@@ -115,6 +120,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.email = action.payload.email;
         state.accessToken = action.payload.accessToken;
+        state.isSuperuser = action.payload.isSuperuser;
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
@@ -141,6 +147,7 @@ const authSlice = createSlice({
       .addCase(logout.fulfilled, (state) => {
         state.email = null;
         state.accessToken = null;
+        state.isSuperuser = false;
         state.error = null;
       });
 

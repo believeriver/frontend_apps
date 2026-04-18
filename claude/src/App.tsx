@@ -7,7 +7,9 @@ import SearchBar from './components/SearchBar';
 import { useTheme } from './hooks/useTheme';
 
 // Landing
-import LandingPage from './pages/LandingPage';
+import LandingPage    from './pages/LandingPage';
+import DisclaimerPage from './pages/DisclaimerPage';
+import PrivacyPage    from './pages/PrivacyPage';
 
 // IR Dashboard pages
 import HomePage      from './pages/HomePage';
@@ -143,10 +145,14 @@ function InnerRoutes() {
   const location = useLocation();
   const isLanding = location.pathname === '/';
 
-  if (isLanding) {
+  const isLegalPage = location.pathname === '/disclaimer' || location.pathname === '/privacy';
+
+  if (isLanding || isLegalPage) {
     return (
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/"           element={<LandingPage />} />
+        <Route path="/disclaimer" element={<DisclaimerPage />} />
+        <Route path="/privacy"    element={<PrivacyPage />} />
       </Routes>
     );
   }

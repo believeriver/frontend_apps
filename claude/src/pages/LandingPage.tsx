@@ -92,15 +92,17 @@ export default function LandingPage() {
           <button className="theme-toggle" onClick={toggle} title={theme === 'dark' ? 'ライトモードへ' : 'ダークモードへ'}>
             {theme === 'dark' ? '☀️' : '🌙'}
           </button>
-          <a
-            href="https://github.com/believeriver"
-            target="_blank"
-            rel="noreferrer"
-            className="lp-nav-github"
-          >
-            <GitHubIcon />
-            <span>GitHub</span>
-          </a>
+          {isSuperuser && (
+            <a
+              href="https://github.com/believeriver"
+              target="_blank"
+              rel="noreferrer"
+              className="lp-nav-github"
+            >
+              <GitHubIcon />
+              <span>GitHub</span>
+            </a>
+          )}
           {accessToken ? (
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
               <span className="lp-nav-user">{email ?? 'ログイン中'}</span>
@@ -173,7 +175,9 @@ export default function LandingPage() {
           © 2025 believeriver ·{' '}
           <a href="https://github.com/believeriver" target="_blank" rel="noreferrer">
             github.com/believeriver
-          </a>
+          </a>{' '}
+          · <Link to="/disclaimer">免責事項</Link>{' '}
+          · <Link to="/privacy">プライバシーポリシー</Link>
         </p>
       </footer>
     </div>

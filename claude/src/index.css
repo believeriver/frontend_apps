@@ -2327,6 +2327,65 @@ button { font-family: inherit; }
 }
 .lp-footer a:hover { color: var(--text-muted); }
 
+/* ── 法的ページ ── */
+.legal-page {
+  position: relative;
+  z-index: 10;
+  max-width: 740px;
+  margin: 48px auto 64px;
+  padding: 0 24px;
+}
+.legal-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.legal-updated {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  margin-bottom: 40px;
+}
+.legal-section {
+  margin-bottom: 32px;
+}
+.legal-section h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.legal-section p,
+.legal-section li {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+.legal-section ul {
+  padding-left: 1.4em;
+  margin-top: 6px;
+}
+.legal-section a {
+  color: #58a6ff;
+  text-decoration: none;
+}
+.legal-section a:hover { text-decoration: underline; }
+.legal-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 48px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 0.85rem;
+}
+.legal-nav a {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+.legal-nav a:hover { color: var(--text); }
+
 /* ── レスポンシブ ── */
 @media (max-width: 600px) {
   .lp-nav    { padding: 16px 20px; }

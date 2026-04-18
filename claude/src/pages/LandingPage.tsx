@@ -157,6 +157,34 @@ export default function LandingPage() {
           </Link>
         ))}
 
+        {/* 管理者専用カード */}
+        {isSuperuser && (
+          <Link
+            to="/contact/manage"
+            className="lp-card"
+            style={{
+              '--lc-color':  '#ff7b72',
+              '--lc-glow':   'rgba(255,123,114,0.25)',
+              '--lc-border': 'rgba(255,123,114,0.4)',
+            } as React.CSSProperties}
+          >
+            <div className="lc-shine" />
+            <div className="lc-icon-wrap">
+              <span className="lc-icon">✉️</span>
+            </div>
+            <div className="lc-body">
+              <h2 className="lc-title">お問い合わせ管理</h2>
+              <p className="lc-desc">ユーザーからのお問い合わせの確認・返信・削除（管理者専用）</p>
+              <div className="lc-tags">
+                {['受信ボックス', '既読管理', '返信'].map(t => (
+                  <span key={t} className="lc-tag">{t}</span>
+                ))}
+              </div>
+            </div>
+            <div className="lc-arrow">→</div>
+          </Link>
+        )}
+
         {/* Coming Soon */}
         <div className="lp-card lp-card-soon">
           <div className="lc-icon-wrap">

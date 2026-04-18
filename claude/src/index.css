@@ -2917,3 +2917,156 @@ button { font-family: inherit; }
 .blm-date       { font-size: 0.78rem; color: var(--bl-muted); white-space: nowrap; }
 .blm-stat       { font-size: 0.78rem; color: var(--bl-dim); white-space: nowrap; }
 .blm-row-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+/* ═══════════════════════════════════════════════════════════
+   Analytics Dashboard
+   ═══════════════════════════════════════════════════════════ */
+.an-page { max-width: 1100px; margin: 0 auto; padding: 28px 24px 80px; }
+
+.an-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+.an-title   { font-size: 1.4rem; font-weight: 700; color: var(--text); }
+.an-subtitle { font-size: 0.82rem; color: var(--text-muted); margin-top: 2px; }
+.an-header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.an-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+.an-tab {
+  padding: 8px 20px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  cursor: pointer;
+  margin-bottom: -1px;
+  font-family: inherit;
+  transition: color 0.15s;
+}
+.an-tab:hover  { color: var(--text); }
+.an-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* サマリーカード */
+.an-stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.an-stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+}
+.an-stat-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px; }
+.an-stat-value { font-size: 1.5rem; font-weight: 700; color: var(--text); line-height: 1.2; }
+.an-stat-sub   { font-size: 0.75rem; color: var(--text-dim); margin-top: 4px; }
+
+/* カード共通 */
+.an-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.an-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 640px) { .an-two-col { grid-template-columns: 1fr; } }
+
+.an-section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+.an-section-title { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+
+/* テーブル */
+.an-table-wrap { overflow-x: auto; }
+.an-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+.an-table th {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.an-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(48,54,61,0.5);
+  color: var(--text);
+  vertical-align: middle;
+}
+.an-table tr:last-child td { border-bottom: none; }
+.an-table tr:hover td { background: var(--bg-hover); }
+.an-table-sm th, .an-table-sm td { padding: 6px 8px; }
+
+.an-rank    { font-weight: 700; color: var(--text-muted); width: 32px; }
+.an-path    { font-family: 'SFMono-Regular', Consolas, monospace; font-size: 0.78rem; color: var(--text-muted); max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.an-nowrap  { white-space: nowrap; }
+.an-ua      { font-size: 0.72rem; color: var(--text-dim); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* バッジ */
+.an-site-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+.an-method-badge { font-family: monospace; font-size: 0.8rem; font-weight: 700; }
+.an-action-badge { font-size: 0.8rem; font-weight: 600; }
+
+/* フィルター */
+.an-filter-card { padding: 14px 20px; }
+.an-filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.an-select, .an-input {
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-hover);
+  color: var(--text);
+  font-size: 0.82rem;
+  font-family: inherit;
+}
+.an-btn-primary {
+  padding: 5px 14px;
+  background: var(--accent);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.82rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.15s;
+}
+.an-btn-primary:hover { opacity: 0.85; }
+.an-btn-danger {
+  padding: 5px 14px;
+  background: transparent;
+  border: 1px solid var(--negative);
+  border-radius: 6px;
+  color: var(--negative);
+  font-size: 0.82rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+.an-btn-danger:hover { background: rgba(248,81,73,0.1); }
+.an-export-btn {
+  padding: 5px 12px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.15s, color 0.15s;
+}
+.an-export-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* 削除バー */
+.an-delete-card { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 12px 20px; }
+.an-delete-label { font-size: 0.82rem; color: var(--text-muted); white-space: nowrap; }
+.an-del-result   { font-size: 0.82rem; color: var(--positive); }
+
+/* ライトモード調整 */
+[data-theme="light"] .an-stat-card,
+[data-theme="light"] .an-card { background: #fff; border-color: #d0d7de; }
+[data-theme="light"] .an-select,
+[data-theme="light"] .an-input { background: #fff; border-color: #d0d7de; color: #1f2328; }

@@ -22,6 +22,9 @@ import TechlogDetailPage from './pages/techlog/TechlogDetailPage';
 import TechlogEditorPage from './pages/techlog/TechlogEditorPage';
 import TechlogMyPage     from './pages/techlog/TechlogMyPage';
 
+// Analytics
+import AnalyticsDashboard from './pages/analytics/AnalyticsDashboard';
+
 // Blog pages
 import BlogListPage    from './pages/blog/BlogListPage';
 import BlogDetailPage  from './pages/blog/BlogDetailPage';
@@ -32,15 +35,20 @@ import './index.css';
 
 // ── アプリ切替タブ ────────────────────────────────────────
 function AppSwitcher() {
-  const location = useLocation();
-  const isTechlog = location.pathname.startsWith('/techlog');
-  const isBlog    = location.pathname.startsWith('/blog');
-  const isIR      = !isTechlog && !isBlog;
+  const location    = useLocation();
+  const isTechlog   = location.pathname.startsWith('/techlog');
+  const isBlog      = location.pathname.startsWith('/blog');
+  const isAnalytics = location.pathname.startsWith('/analytics');
+  const isIR        = !isTechlog && !isBlog && !isAnalytics;
+  const { accessToken } = useSelector((s: RootState) => s.auth);
   return (
     <div className="app-switcher">
-      <NavLink to="/ir"      className={`app-tab ${isIR      ? 'active' : ''}`}>📈 IR</NavLink>
-      <NavLink to="/techlog" className={`app-tab ${isTechlog ? 'active' : ''}`}>✍️ Tech</NavLink>
-      <NavLink to="/blog"    className={`app-tab ${isBlog    ? 'active' : ''}`}>📝 Blog</NavLink>
+      <NavLink to="/ir"      className={`app-tab ${isIR        ? 'active' : ''}`}>📈 IR</NavLink>
+      <NavLink to="/techlog" className={`app-tab ${isTechlog   ? 'active' : ''}`}>✍️ Tech</NavLink>
+      <NavLink to="/blog"    className={`app-tab ${isBlog      ? 'active' : ''}`}>📝 Blog</NavLink>
+      {accessToken && (
+        <NavLink to="/analytics" className={`app-tab ${isAnalytics ? 'active' : ''}`}>📊 Analytics</NavLink>
+      )}
     </div>
   );
 }
@@ -159,6 +167,9 @@ function InnerRoutes() {
         <Route path="/techlog/new"        element={<TechlogEditorPage />} />
         <Route path="/techlog/:uuid"      element={<TechlogDetailPage />} />
         <Route path="/techlog/:uuid/edit" element={<TechlogEditorPage />} />
+
+        {/* Analytics */}
+        <Route path="/analytics" element={<AnalyticsDashboard />} />
 
         {/* Blog */}
         <Route path="/blog"            element={<BlogListPage />} />

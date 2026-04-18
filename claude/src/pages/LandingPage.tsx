@@ -52,6 +52,17 @@ const APPS = [
     border: 'rgba(210,153,34,0.4)',
     disabled: false,
   },
+  {
+    to: '/analytics',
+    icon: '📊',
+    title: 'Analytics',
+    desc: 'サイト全体のアクセス解析・セキュリティログ管理（管理者専用）',
+    tags: ['アクセスログ', 'セキュリティ', 'CSV出力'],
+    color: '#bc8cff',
+    glow: 'rgba(188,140,255,0.25)',
+    border: 'rgba(188,140,255,0.4)',
+    disabled: false,
+  },
 ] as const;
 
 // ── Landing Page ──────────────────────────────────────────────

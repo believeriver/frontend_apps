@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { API_BASE } from './config';
 
-const BASE_URL = 'http://127.0.0.1:8000/api/contact';
+const BASE_URL = `${API_BASE}/api/contact`;
 
 export interface ContactInput {
   name: string;

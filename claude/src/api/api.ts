@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { StockPoint, CompanyData, CompanyListItem } from '../types';
+import { API_BASE } from './config';
 
-const BASE_URL = 'http://127.0.0.1:8000/api/market';
+const BASE_URL = `${API_BASE}/api/market`;
 
 const client = axios.create({
   baseURL: BASE_URL,

@@ -3,10 +3,11 @@ import type {
   AnalyticsSummary, AccessLog, SecurityLog,
   PopularPage, DailyCount, SiteStat,
 } from '../types/analytics';
+import { API_BASE } from './config';
 
 const client = (token: string) =>
   axios.create({
-    baseURL: 'http://127.0.0.1:8000/api/analytics',
+    baseURL: `${API_BASE}/api/analytics`,
     headers: { Authorization: `Bearer ${token}` },
   });
 
@@ -33,7 +34,7 @@ export const apiGetSiteStats = (token: string, params = {}): Promise<SiteStat[]>
 
 export const apiExportCsv = (token: string, params: { type?: string; date_from?: string; date_to?: string; site?: string }) => {
   const query = new URLSearchParams(params as Record<string, string>).toString();
-  const url   = `http://127.0.0.1:8000/api/analytics/export/?${query}`;
+  const url   = `${API_BASE}/api/analytics/export/?${query}`;
   // Bearerトークンをクエリに含められないためaxiosで取得してBlob DL
   return axios.get(url, {
     headers: { Authorization: `Bearer ${token}` },

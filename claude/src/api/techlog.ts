@@ -3,8 +3,9 @@ import {
   TechCategory, TechTag, TechPostSummary, TechPostDetail,
   TechComment, PostInput,
 } from '../types/techlog';
+import { API_BASE } from './config';
 
-const BASE = 'http://127.0.0.1:8000/api/techlog';
+const BASE = `${API_BASE}/api/techlog`;
 
 function client(token?: string) {
   return axios.create({

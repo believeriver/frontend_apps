@@ -1,7 +1,8 @@
 import axios from 'axios';
 import type { BlogPostSummary, BlogPostDetail, BlogCategory, BlogTag, BlogComment } from '../types/blog';
+import { API_BASE } from './config';
 
-const BASE = 'http://127.0.0.1:8000/api/blog';
+const BASE = `${API_BASE}/api/blog`;
 
 const client = (token?: string) => {
   const headers: Record<string, string> = {};

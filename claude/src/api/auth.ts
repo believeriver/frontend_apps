@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { API_BASE } from './config';
 
-const BASE_URL = 'http://127.0.0.1:8000/api/auth';
+const BASE_URL = `${API_BASE}/api/auth`;
 
 const authClient = axios.create({
   baseURL: BASE_URL,

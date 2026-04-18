@@ -6,8 +6,9 @@ import {
   DashboardItem,
   IndustryItem,
 } from '../types';
+import { API_BASE } from './config';
 
-const BASE_URL = 'http://127.0.0.1:8000/api/portfolio';
+const BASE_URL = `${API_BASE}/api/portfolio`;
 
 function authClient(token: string) {
   return axios.create({

@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { useTheme } from '../hooks/useTheme';
+import type { RootState } from '../store';
 
 // ── GitHub SVG Icon ──────────────────────────────────────────
 function GitHubIcon() {
@@ -62,12 +64,15 @@ const APPS = [
     glow: 'rgba(188,140,255,0.25)',
     border: 'rgba(188,140,255,0.4)',
     disabled: false,
+    adminOnly: true,
   },
 ] as const;
 
 // ── Landing Page ──────────────────────────────────────────────
 export default function LandingPage() {
   const { theme, toggle } = useTheme();
+  const { accessToken } = useSelector((s: RootState) => s.auth);
+  const visibleApps = APPS.filter(app => !('adminOnly' in app && app.adminOnly) || accessToken);
   return (
     <div className="lp-root">
       {/* 背景装飾 */}
@@ -107,7 +112,7 @@ export default function LandingPage() {
 
       {/* アプリカード */}
       <section className="lp-cards">
-        {APPS.map((app) => (
+        {visibleApps.map((app) => (
           <Link
             key={app.to}
             to={app.to}

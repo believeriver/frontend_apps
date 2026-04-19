@@ -2327,6 +2327,191 @@ button { font-family: inherit; }
 }
 .lp-footer a:hover { color: var(--text-muted); }
 
+/* ── プロフィール ── */
+.pf-page {
+  position: relative;
+  z-index: 10;
+  max-width: 1060px;
+  margin: 40px auto 64px;
+  padding: 0 24px;
+}
+.pf-loading {
+  text-align: center;
+  color: var(--text-dim);
+  padding: 80px 0;
+}
+.pf-hero {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-bottom: 40px;
+  padding: 32px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+.pf-avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 2px solid var(--border);
+  background: var(--bg-hover);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pf-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.pf-avatar-placeholder {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+.pf-hero-info { flex: 1; }
+.pf-name {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.pf-nickname {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+.pf-location {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+.pf-links { display: flex; gap: 8px; flex-wrap: wrap; }
+.pf-link {
+  font-size: 0.8rem;
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.pf-link:hover { border-color: #58a6ff; color: #58a6ff; }
+.pf-body {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 24px;
+  align-items: start;
+}
+.pf-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.pf-section-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+/* bio */
+.pf-bio { display: flex; flex-direction: column; gap: 6px; }
+.pf-bio-heading {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-top: 14px;
+  margin-bottom: 2px;
+}
+.pf-bio-heading:first-child { margin-top: 0; }
+.pf-bio-p {
+  font-size: 0.87rem;
+  color: var(--text-muted);
+  line-height: 1.75;
+}
+/* スキル */
+.pf-skill-group { margin-bottom: 18px; }
+.pf-skill-group:last-child { margin-bottom: 0; }
+.pf-skill-cat {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+.pf-skill-list { display: flex; flex-direction: column; gap: 6px; }
+.pf-skill-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  background: var(--bg-hover);
+}
+.pf-skill-name {
+  font-size: 0.85rem;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.pf-skill-desc {
+  font-size: 0.73rem;
+  color: var(--text-dim);
+}
+.pf-skill-level { display: flex; gap: 4px; flex-shrink: 0; }
+.pf-skill-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+}
+.pf-skill-dot.filled { background: #58a6ff; }
+/* 経歴 */
+.pf-career-list { display: flex; flex-direction: column; gap: 14px; }
+.pf-career-item {
+  padding: 12px 14px;
+  border-left: 3px solid #58a6ff;
+  background: var(--bg-hover);
+  border-radius: 0 8px 8px 0;
+}
+.pf-career-period {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+.pf-career-title {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.pf-career-company {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+.pf-career-desc {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+.pf-updated {
+  text-align: right;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-top: 8px;
+}
+@media (max-width: 768px) {
+  .pf-body { grid-template-columns: 1fr; }
+  .pf-hero { flex-direction: column; text-align: center; }
+}
+
 /* ── お問い合わせ管理 ── */
 .cm-page {
   position: relative;

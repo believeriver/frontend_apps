@@ -56,6 +56,17 @@ const APPS = [
     disabled: false,
   },
   {
+    to: '/profile',
+    icon: '👤',
+    title: 'Profile',
+    desc: 'スキル・資格・経歴・プロジェクトをまとめた作成者のプロフィールページ',
+    tags: ['スキル', '資格', '経歴', 'About Me'],
+    color: '#f78166',
+    glow: 'rgba(247,129,102,0.25)',
+    border: 'rgba(247,129,102,0.4)',
+    disabled: false,
+  },
+  {
     to: '/analytics',
     icon: '📊',
     title: 'Analytics',

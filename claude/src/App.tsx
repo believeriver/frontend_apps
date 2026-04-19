@@ -12,6 +12,7 @@ import DisclaimerPage from './pages/DisclaimerPage';
 import PrivacyPage    from './pages/PrivacyPage';
 import ContactPage       from './pages/ContactPage';
 import ContactManagePage from './pages/ContactManagePage';
+import ProfilePage       from './pages/ProfilePage';
 
 // IR Dashboard pages
 import HomePage      from './pages/HomePage';
@@ -147,7 +148,7 @@ function InnerRoutes() {
   const location = useLocation();
   const isLanding = location.pathname === '/';
 
-  const isLegalPage = ['/disclaimer', '/privacy', '/contact', '/contact/manage'].includes(location.pathname);
+  const isLegalPage = ['/disclaimer', '/privacy', '/contact', '/contact/manage', '/profile'].includes(location.pathname);
 
   if (isLanding || isLegalPage) {
     return (
@@ -157,6 +158,7 @@ function InnerRoutes() {
         <Route path="/privacy"    element={<PrivacyPage />} />
         <Route path="/contact"        element={<ContactPage />} />
         <Route path="/contact/manage" element={<ContactManagePage />} />
+        <Route path="/profile"        element={<ProfilePage />} />
       </Routes>
     );
   }

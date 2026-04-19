@@ -23,8 +23,8 @@ const THUMB_COLORS: Record<string, string> = {
 
 function Thumbnail({ post, size = 'sm' }: { post: BlogPostSummary; size?: 'sm' | 'lg' }) {
   const bg = THUMB_COLORS[post.category?.name ?? ''] ?? 'rgba(180,180,175,0.4)';
-  if (post.thumbnail) {
-    return <img src={post.thumbnail} alt={post.title} className={`bl-thumb bl-thumb-${size}`} />;
+  if (post.thumbnail_url) {
+    return <img src={post.thumbnail_url} alt={post.title} className={`bl-thumb bl-thumb-${size}`} />;
   }
   return <div className={`bl-thumb bl-thumb-${size}`} style={{ background: bg }} />;
 }

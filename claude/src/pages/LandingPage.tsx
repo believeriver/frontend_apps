@@ -56,17 +56,6 @@ const APPS = [
     disabled: false,
   },
   {
-    to: '/profile',
-    icon: '👤',
-    title: 'Profile',
-    desc: 'スキル・資格・経歴・プロジェクトをまとめた作成者のプロフィールページ',
-    tags: ['スキル', '資格', '経歴', 'About Me'],
-    color: '#f78166',
-    glow: 'rgba(247,129,102,0.25)',
-    border: 'rgba(247,129,102,0.4)',
-    disabled: false,
-  },
-  {
     to: '/analytics',
     icon: '📊',
     title: 'Analytics',
@@ -98,7 +87,8 @@ export default function LandingPage() {
 
       {/* ナビ */}
       <nav className="lp-nav">
-        <span className="lp-nav-brand">◈ believeriver</span>
+        <Link to="/profile" className="lp-nav-brand" style={{ textDecoration: 'none' }}>◈ believeriver</Link>
+        <Link to="/profile" className="lp-nav-profile">About</Link>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           <button className="theme-toggle" onClick={toggle} title={theme === 'dark' ? 'ライトモードへ' : 'ダークモードへ'}>
             {theme === 'dark' ? '☀️' : '🌙'}

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../../store';
 import { loadBlogMeta, loadBlogPost } from '../../store/blogSlice';
-import { apiCreateBlogPost, apiUpdateBlogPost, apiUploadBlogImage } from '../../api/blog';
+import { apiCreateBlogPost, apiUpdateBlogPost, apiUploadBlogImage, apiUploadBlogThumbnail } from '../../api/blog';
 import MarkdownRenderer from '../../components/techlog/MarkdownRenderer';
 
 type Tab = 'write' | 'preview';
@@ -25,9 +25,12 @@ export default function BlogEditorPage() {
   const [status,      setStatus]      = useState<'draft' | 'published'>('draft');
   const [createdDate, setCreatedDate] = useState('');
   const [tab,      setTab]      = useState<Tab>('write');
-  const [saving,   setSaving]   = useState(false);
-  const [error,    setError]    = useState('');
-  const [imgUploading, setImgUploading] = useState(false);
+  const [saving,        setSaving]        = useState(false);
+  const [error,         setError]         = useState('');
+  const [imgUploading,  setImgUploading]  = useState(false);
+  const [thumbUrl,      setThumbUrl]      = useState<string | null>(null);
+  const [thumbUploading, setThumbUploading] = useState(false);
+  const thumbInputRef = useRef<HTMLInputElement>(null);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -46,8 +49,8 @@ export default function BlogEditorPage() {
       setTagIds(detail.tags.map(t => t.id));
       setLocation(detail.location ?? '');
       setStatus(detail.status === 'published' ? 'published' : 'draft');
-      // created_at を datetime-local 形式に変換
       setCreatedDate(detail.created_at.slice(0, 16));
+      setThumbUrl(detail.thumbnail_url ?? null);
     }
   }, [isEdit, detail, uuid]);
 
@@ -58,6 +61,22 @@ export default function BlogEditorPage() {
 
   const toggleTag = (id: number) => {
     setTagIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+  };
+
+  const handleThumbnailUpload = async (file: File) => {
+    if (!isEdit || !uuid) {
+      setError('サムネイルをアップロードするには先に記事を保存してください。');
+      return;
+    }
+    setThumbUploading(true);
+    try {
+      const res = await apiUploadBlogThumbnail(uuid, file, accessToken!);
+      setThumbUrl(res.thumbnail_url);
+    } catch {
+      setError('サムネイルのアップロードに失敗しました。');
+    } finally {
+      setThumbUploading(false);
+    }
   };
 
   // 画像をドロップ or ペーストで挿入（記事保存後にURLを取得する仕組みのため、
@@ -211,8 +230,41 @@ export default function BlogEditorPage() {
             />
           </div>
 
+          <div className="ble-field">
+            <label className="ble-label">サムネイル</label>
+            <div
+              className="ble-thumb-area"
+              onClick={() => thumbInputRef.current?.click()}
+            >
+              {thumbUrl ? (
+                <img src={thumbUrl} alt="thumbnail" className="ble-thumb-preview" />
+              ) : (
+                <span className="ble-thumb-placeholder">
+                  {thumbUploading ? 'アップロード中...' : 'クリックして画像を選択'}
+                </span>
+              )}
+            </div>
+            <input
+              ref={thumbInputRef}
+              type="file"
+              accept="image/*"
+              style={{ display: 'none' }}
+              onChange={e => {
+                const file = e.target.files?.[0];
+                if (file) handleThumbnailUpload(file);
+                e.target.value = '';
+              }}
+            />
+            {thumbUrl && (
+              <button
+                className="ble-thumb-remove"
+                onClick={() => setThumbUrl(null)}
+              >サムネイルを削除</button>
+            )}
+          </div>
+
           <div className="ble-hint">
-            <p>💡 画像の挿入</p>
+            <p>💡 本文画像の挿入</p>
             <p>エディタ上で画像をペースト（Cmd+V）またはドロップすると自動でアップロードされます。</p>
             <p>※ 新規記事は先に「下書き保存」してから画像を挿入してください。</p>
           </div>

@@ -56,9 +56,13 @@ export const apiDeleteBlogPost = (uuid: string, token: string): Promise<void> =>
 export const apiUploadBlogImage = (uuid: string, file: File, token: string): Promise<{ url: string }> => {
   const form = new FormData();
   form.append('image', file);
-  return client(token).post<{ url: string }>(`/posts/${uuid}/images/`, form, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  }).then(r => r.data);
+  return client(token).post<{ url: string }>(`/posts/${uuid}/images/`, form).then(r => r.data);
+};
+
+export const apiUploadBlogThumbnail = (uuid: string, file: File, token: string): Promise<{ thumbnail_url: string }> => {
+  const form = new FormData();
+  form.append('thumbnail', file);
+  return client(token).patch<{ thumbnail_url: string }>(`/posts/${uuid}/`, form).then(r => r.data);
 };
 
 export const apiLikeBlogPost = (uuid: string, token: string): Promise<{ like_count: number }> =>

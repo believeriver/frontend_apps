@@ -27,7 +27,7 @@ export interface BlogPostSummary {
   like_count: number;
   comment_count: number;
   reading_time: number;
-  thumbnail: string | null;
+  thumbnail_url: string | null;
   excerpt: string | null;
   created_at: string;
   updated_at: string;

@@ -100,9 +100,9 @@ export default function BlogDetailPage() {
         </header>
 
         {/* サムネイル */}
-        {detail.thumbnail && (
+        {detail.thumbnail_url && (
           <div className="bl-detail-thumb-wrap">
-            <img src={detail.thumbnail} alt={detail.title} className="bl-detail-thumb" />
+            <img src={detail.thumbnail_url} alt={detail.title} className="bl-detail-thumb" />
           </div>
         )}
 

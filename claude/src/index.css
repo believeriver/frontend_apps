@@ -2339,6 +2339,94 @@ button { font-family: inherit; }
 }
 .lp-footer a:hover { color: var(--text-muted); }
 
+/* ── アカウント設定 ── */
+.settings-page {
+  position: relative;
+  z-index: 10;
+  max-width: 560px;
+  margin: 48px auto 64px;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.settings-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+.settings-section-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.settings-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.settings-label {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.settings-input {
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+.settings-input:focus {
+  outline: none;
+  border-color: #58a6ff;
+}
+.settings-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+.settings-btn {
+  padding: 9px 24px;
+  background: #58a6ff;
+  color: #0d1117;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.settings-btn:hover:not(:disabled) { background: #79b8ff; }
+.settings-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.settings-success {
+  font-size: 0.85rem;
+  color: #3fb950;
+  background: rgba(63,185,80,0.08);
+  border: 1px solid rgba(63,185,80,0.3);
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+.settings-error {
+  font-size: 0.85rem;
+  color: #f85149;
+  background: rgba(248,81,73,0.08);
+  border: 1px solid rgba(248,81,73,0.3);
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+
 /* ── プロフィール ── */
 .pf-page {
   position: relative;

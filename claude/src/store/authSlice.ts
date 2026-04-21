@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { apiLogin, apiRegister, apiLogout, apiRefresh } from '../api/auth';
+import { apiLogin, apiRegister, apiLogout, apiRefresh, apiUpdateProfile } from '../api/auth';
 
 const REFRESH_KEY = 'ir_refresh_token';
 const SUPERUSER_KEY = 'ir_is_superuser';
@@ -84,6 +84,22 @@ export const logout = createAsyncThunk(
   }
 );
 
+export const updateProfile = createAsyncThunk(
+  'auth/updateProfile',
+  async (
+    { token, email, username }: { token: string; email?: string; username?: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      return await apiUpdateProfile(token, { email, username });
+    } catch (e: any) {
+      const data = e.response?.data;
+      const msg = data?.email?.[0] || data?.username?.[0] || data?.detail || '更新に失敗しました';
+      return rejectWithValue(msg);
+    }
+  }
+);
+
 /** アプリ起動時: localStorage にリフレッシュトークンがあれば自動ログイン */
 export const restoreSession = createAsyncThunk(
   'auth/restore',
@@ -160,6 +176,12 @@ const authSlice = createSlice({
       .addCase(restoreSession.rejected, (state) => {
         state.accessToken = null;
         state.email = null;
+      });
+
+    // updateProfile
+    builder
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.email = action.payload.email;
       });
   },
 });

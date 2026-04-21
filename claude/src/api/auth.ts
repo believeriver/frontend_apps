@@ -54,3 +54,24 @@ export const apiRefresh = async (refreshToken: string): Promise<string> => {
   });
   return data.access;
 };
+
+export const apiUpdateProfile = async (
+  token: string,
+  data: { email?: string; username?: string }
+): Promise<{ email: string; username: string }> => {
+  const { data: res } = await authClient.patch<{ email: string; username: string }>(
+    '/profile/',
+    data,
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  return res;
+};
+
+export const apiChangePassword = async (
+  token: string,
+  data: { current_password: string; new_password: string; new_password2: string }
+): Promise<void> => {
+  await authClient.post('/change-password/', data, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+};

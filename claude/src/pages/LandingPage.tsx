@@ -107,6 +107,7 @@ export default function LandingPage() {
           {accessToken ? (
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
               <span className="lp-nav-user">{email ?? 'ログイン中'}</span>
+              <Link to="/settings" className="lp-nav-login">設定</Link>
               <button className="lp-nav-logout" onClick={handleLogout}>ログアウト</button>
             </div>
           ) : (

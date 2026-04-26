@@ -56,6 +56,17 @@ const APPS = [
     disabled: false,
   },
   {
+    to: '/announce',
+    icon: '📢',
+    title: 'お知らせ',
+    desc: 'サイトのお知らせ・メンテナンス情報・機能追加などの変更履歴',
+    tags: ['お知らせ', '変更履歴', 'メンテナンス'],
+    color: '#79c0ff',
+    glow: 'rgba(121,192,255,0.25)',
+    border: 'rgba(121,192,255,0.4)',
+    disabled: false,
+  },
+  {
     to: '/analytics',
     icon: '📊',
     title: 'Analytics',
@@ -160,6 +171,28 @@ export default function LandingPage() {
         ))}
 
         {/* 管理者専用カード */}
+        {isSuperuser && (
+          <Link
+            to="/announce/manage"
+            className="lp-card"
+            style={{
+              '--lc-color':  '#79c0ff',
+              '--lc-glow':   'rgba(121,192,255,0.25)',
+              '--lc-border': 'rgba(121,192,255,0.4)',
+            } as React.CSSProperties}
+          >
+            <div className="lc-shine" />
+            <div className="lc-icon-wrap"><span className="lc-icon">📝</span></div>
+            <div className="lc-body">
+              <h2 className="lc-title">お知らせ管理</h2>
+              <p className="lc-desc">お知らせ・変更履歴の登録・編集・削除（管理者専用）</p>
+              <div className="lc-tags">
+                {['お知らせ', '変更履歴', '管理者'].map(t => <span key={t} className="lc-tag">{t}</span>)}
+              </div>
+            </div>
+            <div className="lc-arrow">→</div>
+          </Link>
+        )}
         {isSuperuser && (
           <Link
             to="/contact/manage"

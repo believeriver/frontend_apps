@@ -2339,6 +2339,294 @@ button { font-family: inherit; }
 }
 .lp-footer a:hover { color: var(--text-muted); }
 
+/* ── お知らせ公開ページ ── */
+.an-page {
+  position: relative;
+  z-index: 10;
+  max-width: 800px;
+  margin: 40px auto 64px;
+  padding: 0 24px;
+}
+.an-page-header {
+  margin-bottom: 8px;
+}
+.an-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0;
+}
+.an-tab {
+  padding: 8px 20px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s;
+  margin-bottom: -1px;
+}
+.an-tab.active {
+  color: var(--text);
+  border-bottom-color: #58a6ff;
+}
+.an-tab-count {
+  font-size: 0.72rem;
+  background: var(--bg-hover);
+  border-radius: 10px;
+  padding: 1px 7px;
+  color: var(--text-dim);
+}
+.an-list { display: flex; flex-direction: column; gap: 8px; }
+.an-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.an-card.pinned { border-color: rgba(88,166,255,0.4); }
+.an-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  cursor: pointer;
+  gap: 12px;
+}
+.an-card-header:hover { background: var(--bg-hover); }
+.an-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+.an-card-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.an-pin { font-size: 0.85rem; }
+.an-badge {
+  font-size: 0.72rem;
+  padding: 2px 9px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.an-version {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  background: var(--bg-hover);
+  padding: 2px 8px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  font-family: monospace;
+}
+.an-card-title {
+  font-size: 0.9rem;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.an-card-date {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+.an-chevron { font-size: 0.65rem; color: var(--text-dim); }
+.an-card-body {
+  padding: 16px 20px 20px;
+  border-top: 1px solid var(--border);
+}
+.an-period {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  margin-top: 12px;
+}
+.an-empty {
+  text-align: center;
+  color: var(--text-dim);
+  padding: 48px 0;
+  font-size: 0.9rem;
+}
+
+/* ── お知らせ管理ページ ── */
+.anm-page {
+  position: relative;
+  z-index: 10;
+  max-width: 1000px;
+  margin: 40px auto 64px;
+  padding: 0 24px;
+}
+.anm-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.anm-new-btn {
+  padding: 8px 20px;
+  background: #58a6ff;
+  color: #0d1117;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.anm-new-btn:hover { background: #79b8ff; }
+.anm-form {
+  background: var(--bg-card);
+  border: 1px solid #58a6ff55;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.anm-form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+.anm-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.anm-form-field label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+.anm-checkbox-field {
+  justify-content: flex-end;
+}
+.anm-checkbox-field label {
+  display: flex;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.anm-input, .anm-select {
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: var(--text);
+  font-size: 0.88rem;
+  font-family: inherit;
+}
+.anm-input:focus, .anm-select:focus { outline: none; border-color: #58a6ff; }
+.anm-textarea {
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  color: var(--text);
+  font-size: 0.85rem;
+  font-family: monospace;
+  resize: vertical;
+  width: 100%;
+  box-sizing: border-box;
+}
+.anm-textarea:focus { outline: none; border-color: #58a6ff; }
+.anm-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.anm-cancel-btn {
+  padding: 8px 20px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.anm-save-btn {
+  padding: 8px 24px;
+  background: #58a6ff;
+  color: #0d1117;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.anm-save-btn:hover:not(:disabled) { background: #79b8ff; }
+.anm-save-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.anm-list { display: flex; flex-direction: column; gap: 6px; }
+.anm-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  gap: 12px;
+}
+.anm-row-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+.anm-row-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.anm-row-status {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.anm-row-title {
+  font-size: 0.88rem;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.anm-edit-btn {
+  padding: 4px 14px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.anm-edit-btn:hover { border-color: #58a6ff; color: #58a6ff; }
+.anm-del-btn {
+  padding: 4px 14px;
+  border: 1px solid rgba(248,81,73,0.4);
+  border-radius: 5px;
+  background: transparent;
+  color: #f85149;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.anm-del-btn:hover { background: rgba(248,81,73,0.1); }
+
 /* ── アカウント設定 ── */
 .settings-page {
   position: relative;

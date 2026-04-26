@@ -175,6 +175,44 @@ button { font-family: inherit; }
 }
 .search-btn:hover { opacity: 0.85; }
 
+/* ── TechBlog Header Search ── */
+.tech-search-form {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+  max-width: 520px;
+}
+.tech-search-input {
+  flex: 1;
+  padding: 8px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--text);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.tech-search-input::placeholder { color: var(--text-dim); }
+.tech-search-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(88,166,255,0.15);
+}
+.tech-search-btn {
+  padding: 8px 16px;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.tech-search-btn:hover {
+  background: var(--bg-hover);
+  border-color: #8b949e;
+}
+
 /* ── Stock Header ── */
 .stock-header {
   background: var(--bg-card);

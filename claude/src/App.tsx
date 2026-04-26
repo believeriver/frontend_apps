@@ -4,6 +4,7 @@ import { Provider, useDispatch, useSelector } from 'react-redux';
 import { store, RootState, AppDispatch } from './store';
 import { restoreSession, logout } from './store/authSlice';
 import SearchBar from './components/SearchBar';
+import TechSearchBar from './components/TechSearchBar';
 import { useTheme } from './hooks/useTheme';
 
 // Landing
@@ -121,16 +122,17 @@ function ThemeToggle() {
 function Layout({ children }: { children: React.ReactNode }) {
   const location  = useLocation();
   const isTechlog = location.pathname.startsWith('/techlog');
+  const isBlog    = location.pathname.startsWith('/blog');
+  const isIR      = !isTechlog && !isBlog && !location.pathname.startsWith('/analytics');
   const isEditor  = location.pathname.includes('/new') || location.pathname.includes('/edit');
 
   return (
     <div className="app">
       <header className="app-header">
-        <Link to="/" className="logo" title="ポータルへ戻る">
-          {isTechlog ? 'TechBlog' : 'IR Dashboard'}
-        </Link>
+        <Link to="/" className="logo" title="ポータルへ戻る">Home</Link>
         <AppSwitcher />
-        {!isEditor && <SearchBar />}
+        {isIR      && !isEditor && <SearchBar />}
+        {isTechlog && !isEditor && <TechSearchBar />}
         <ThemeToggle />
         <AuthControl />
       </header>
@@ -139,6 +141,8 @@ function Layout({ children }: { children: React.ReactNode }) {
         <p>
           {isTechlog
             ? 'TechBlog — 技術ブログプラットフォーム'
+            : isBlog
+            ? 'Blog — 日々の記録'
             : 'データは Django API より取得。投資判断の参考情報としてご利用ください。'}
         </p>
       </footer>

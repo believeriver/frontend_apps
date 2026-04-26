@@ -62,6 +62,13 @@ export default function TechlogListPage() {
   const [ordering, setOrdering] = useState<'views' | 'likes' | 'created'>('created');
   const [page,     setPage]     = useState(1);
 
+  // ヘッダー検索バーからのURL変化を反映
+  useEffect(() => {
+    setSearch(searchParams.get('search') ?? '');
+    setCatId(searchParams.get('category') ? Number(searchParams.get('category')) : undefined);
+    setTagId(searchParams.get('tag') ? Number(searchParams.get('tag')) : undefined);
+  }, [searchParams]);
+
   useEffect(() => {
     dispatch(loadMeta());
   }, [dispatch]);

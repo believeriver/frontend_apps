@@ -43,7 +43,7 @@ function ArticleCard({ post }: { post: TechPostSummary }) {
   );
 }
 
-const PER_PAGE = 20;
+const PER_PAGE = 10;
 
 export default function TechlogListPage() {
   const dispatch = useDispatch<AppDispatch>();

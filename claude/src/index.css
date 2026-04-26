@@ -1608,6 +1608,10 @@ button { font-family: inherit; }
   margin: 0 auto;
   padding: 24px 16px;
 }
+.tl-detail-main {
+  min-width: 0;
+  overflow: hidden;
+}
 @media (max-width: 800px) {
   .tl-detail-layout { grid-template-columns: 1fr; }
   .tl-detail-sidebar { order: -1; }
@@ -1670,6 +1674,9 @@ button { font-family: inherit; }
   line-height: 1.8;
   color: var(--text-main);
   font-size: 0.95rem;
+  overflow-x: hidden;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 .tl-markdown-body h1,
 .tl-markdown-body h2,

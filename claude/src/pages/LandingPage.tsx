@@ -99,34 +99,37 @@ export default function LandingPage() {
 
       {/* ナビ */}
       <nav className="lp-nav">
-        <Link to="/profile" className="lp-nav-brand" style={{ textDecoration: 'none' }}>◈ believeriver</Link>
-        <Link to="/profile" className="lp-nav-profile">About</Link>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        {/* 左: ブランド */}
+        <Link to="/" className="lp-nav-brand" style={{ textDecoration: 'none' }}>◈ believeriver</Link>
+
+        {/* 中央: ナビリンク */}
+        <div className="lp-nav-center">
+          <Link to="/profile"  className="lp-nav-link">Profile</Link>
+          <Link to="/announce" className="lp-nav-link">お知らせ</Link>
+          <Link to="/contact"  className="lp-nav-link">Contact</Link>
+        </div>
+
+        {/* 右: 認証 */}
+        <div className="lp-nav-right">
           <button className="theme-toggle" onClick={toggle} title={theme === 'dark' ? 'ライトモードへ' : 'ダークモードへ'}>
             {theme === 'dark' ? '☀️' : '🌙'}
           </button>
           {isSuperuser && (
-            <a
-              href="https://github.com/believeriver"
-              target="_blank"
-              rel="noreferrer"
-              className="lp-nav-github"
-            >
-              <GitHubIcon />
-              <span>GitHub</span>
+            <a href="https://github.com/believeriver" target="_blank" rel="noreferrer" className="lp-nav-github">
+              <GitHubIcon /><span>GitHub</span>
             </a>
           )}
           {accessToken ? (
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <>
               <span className="lp-nav-user">{email ?? 'ログイン中'}</span>
               <Link to="/settings" className="lp-nav-login">設定</Link>
               <button className="lp-nav-logout" onClick={handleLogout}>ログアウト</button>
-            </div>
+            </>
           ) : (
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <>
               <Link to="/login"    className="lp-nav-login">ログイン</Link>
               <Link to="/register" className="lp-nav-register">新規登録</Link>
-            </div>
+            </>
           )}
         </div>
       </nav>
@@ -291,16 +294,41 @@ export default function LandingPage() {
       )}
 
       {/* フッター */}
-      <footer className="lp-footer">
-        <p>
-          © 2025 believeriver ·{' '}
-          <a href="https://github.com/believeriver" target="_blank" rel="noreferrer">
-            github.com/believeriver
-          </a>{' '}
-          · <Link to="/disclaimer">免責事項</Link>{' '}
-          · <Link to="/privacy">プライバシーポリシー</Link>{' '}
-          · <Link to="/contact">お問い合わせ</Link>
-        </p>
+      <footer className="lp-footer-new">
+        <div className="lp-footer-body">
+          {/* ブランド */}
+          <div className="lp-footer-brand">
+            <span className="lp-footer-brand-name">◈ believeriver</span>
+            <p className="lp-footer-brand-desc">フルスタック個人開発<br />Django REST × React / TypeScript</p>
+          </div>
+
+          {/* アプリ */}
+          <div className="lp-footer-col">
+            <h6 className="lp-footer-col-title">アプリ</h6>
+            <Link to="/ir"      className="lp-footer-link">📈 IR Dashboard</Link>
+            <Link to="/techlog" className="lp-footer-link">✍️ TechBlog</Link>
+            <Link to="/blog"    className="lp-footer-link">📝 Blog</Link>
+          </div>
+
+          {/* サイト情報 */}
+          <div className="lp-footer-col">
+            <h6 className="lp-footer-col-title">サイト情報</h6>
+            <Link to="/announce" className="lp-footer-link">お知らせ・変更履歴</Link>
+            <Link to="/profile"  className="lp-footer-link">Profile</Link>
+            <Link to="/contact"  className="lp-footer-link">お問い合わせ</Link>
+          </div>
+
+          {/* 法的情報 */}
+          <div className="lp-footer-col">
+            <h6 className="lp-footer-col-title">法的情報</h6>
+            <Link to="/disclaimer" className="lp-footer-link">免責事項</Link>
+            <Link to="/privacy"    className="lp-footer-link">プライバシーポリシー</Link>
+          </div>
+        </div>
+
+        <div className="lp-footer-bottom">
+          <span>© 2025 believeriver</span>
+        </div>
       </footer>
     </div>
   );

@@ -81,6 +81,9 @@
 [data-theme="light"] .lp-nav-login { color: var(--text-muted); }
 [data-theme="light"] .lp-nav-logout { color: var(--text-muted); }
 [data-theme="light"] .lp-nav-user { color: var(--text-muted); }
+[data-theme="light"] .lp-nav-link { color: var(--text-muted); }
+[data-theme="light"] .lp-footer-new { border-color: var(--border); }
+[data-theme="light"] .lp-footer-link { color: var(--text-muted); }
 [data-theme="light"] .lp-tagline,
 [data-theme="light"] .lp-sub { color: var(--text-muted); }
 [data-theme="light"] .lp-footer { color: var(--text-dim); }
@@ -2073,7 +2076,8 @@ button { font-family: inherit; }
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 32px;
+  padding: 20px 32px;
+  gap: 16px;
 }
 .lp-nav-brand {
   font-size: 1rem;
@@ -2159,6 +2163,29 @@ button { font-family: inherit; }
   color: #f85149;
   border-color: #f85149;
   background: rgba(248,81,73,0.08);
+}
+.lp-nav-center {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.lp-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.lp-nav-link {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  transition: color 0.2s, background 0.2s;
+}
+.lp-nav-link:hover {
+  color: var(--text);
+  background: var(--bg-hover);
+  text-decoration: none;
 }
 
 /* ── ヒーロー ── */
@@ -2427,6 +2454,72 @@ button { font-family: inherit; }
   text-decoration: none;
 }
 .lp-footer a:hover { color: var(--text-muted); }
+
+/* ── 新フッター (multi-column) ── */
+.lp-footer-new {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  border-top: 1px solid rgba(48,54,61,0.8);
+  margin-top: 32px;
+}
+.lp-footer-body {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  padding: 48px 32px 32px;
+}
+.lp-footer-brand {
+  flex: 1 1 220px;
+}
+.lp-footer-brand-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: 12px;
+}
+.lp-footer-brand-desc {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  line-height: 1.7;
+  margin: 0;
+}
+.lp-footer-col {
+  flex: 0 1 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.lp-footer-col-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin: 0 0 4px;
+}
+.lp-footer-link {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.lp-footer-link:hover {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+.lp-footer-bottom {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px 32px 32px;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  border-top: 1px solid rgba(48,54,61,0.6);
+}
 
 /* ── お知らせ公開ページ ── */
 .an-page {
@@ -3381,9 +3474,12 @@ button { font-family: inherit; }
 
 /* ── レスポンシブ ── */
 @media (max-width: 600px) {
-  .lp-nav    { padding: 16px 20px; }
+  .lp-nav    { padding: 16px 20px; flex-wrap: wrap; }
+  .lp-nav-center { display: none; }
   .lp-hero   { padding: 32px 20px 28px; }
   .lp-cards  { padding: 0 20px 48px; }
+  .lp-footer-body { padding: 32px 20px 24px; gap: 24px; }
+  .lp-footer-bottom { padding: 12px 20px 24px; }
 }
 /* ── ページネーション ── */
 .tl-pagination {

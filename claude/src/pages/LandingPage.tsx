@@ -1,8 +1,12 @@
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTheme } from '../hooks/useTheme';
 import { logout } from '../store/authSlice';
 import type { RootState, AppDispatch } from '../store';
+import { apiGetAnnounces, apiGetChangelogs } from '../api/announce';
+import type { Announce, Changelog } from '../types/announce';
+import { ANNOUNCE_TYPE_COLOR, CHANGELOG_TYPE_COLOR } from '../types/announce';
 
 // ── GitHub SVG Icon ──────────────────────────────────────────
 function GitHubIcon() {
@@ -56,17 +60,6 @@ const APPS = [
     disabled: false,
   },
   {
-    to: '/announce',
-    icon: '📢',
-    title: 'お知らせ',
-    desc: 'サイトのお知らせ・メンテナンス情報・機能追加などの変更履歴',
-    tags: ['お知らせ', '変更履歴', 'メンテナンス'],
-    color: '#79c0ff',
-    glow: 'rgba(121,192,255,0.25)',
-    border: 'rgba(121,192,255,0.4)',
-    disabled: false,
-  },
-  {
     to: '/analytics',
     icon: '📊',
     title: 'Analytics',
@@ -86,6 +79,14 @@ export default function LandingPage() {
   const dispatch = useDispatch<AppDispatch>();
   const { accessToken, email, isSuperuser } = useSelector((s: RootState) => s.auth);
   const visibleApps = APPS.filter(app => !('adminOnly' in app && app.adminOnly) || isSuperuser);
+
+  const [announces,  setAnnounces]  = useState<Announce[]>([]);
+  const [changelogs, setChangelogs] = useState<Changelog[]>([]);
+
+  useEffect(() => {
+    apiGetAnnounces().then(a => setAnnounces(a.slice(0, 3)));
+    apiGetChangelogs().then(c => setChangelogs(c.slice(0, 3)));
+  }, []);
 
   const handleLogout = () => { dispatch(logout()); };
   return (
@@ -231,6 +232,63 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* お知らせ・変更履歴 */}
+      {(announces.length > 0 || changelogs.length > 0) && (
+        <section className="lp-info">
+          {announces.length > 0 && (
+            <div className="lp-info-col">
+              <div className="lp-info-header">
+                <span className="lp-info-title">📢 お知らせ</span>
+                <Link to="/announce" className="lp-info-more">すべて見る →</Link>
+              </div>
+              <ul className="lp-info-list">
+                {announces.map(a => (
+                  <li key={a.id} className="lp-info-item">
+                    <Link to="/announce" className="lp-info-link">
+                      {a.is_pinned && <span className="lp-info-pin">📌</span>}
+                      <span
+                        className="lp-info-badge"
+                        style={{ color: ANNOUNCE_TYPE_COLOR[a.type], borderColor: ANNOUNCE_TYPE_COLOR[a.type] + '55' }}
+                      >{a.type_label}</span>
+                      <span className="lp-info-text">{a.title}</span>
+                      <span className="lp-info-date">
+                        {new Date(a.created_at).toLocaleDateString('ja-JP', { month: '2-digit', day: '2-digit' })}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {changelogs.length > 0 && (
+            <div className="lp-info-col">
+              <div className="lp-info-header">
+                <span className="lp-info-title">📋 変更履歴</span>
+                <Link to="/announce" className="lp-info-more">すべて見る →</Link>
+              </div>
+              <ul className="lp-info-list">
+                {changelogs.map(c => (
+                  <li key={c.id} className="lp-info-item">
+                    <Link to="/announce" className="lp-info-link">
+                      <span className="lp-info-version">{c.version}</span>
+                      <span
+                        className="lp-info-badge"
+                        style={{ color: CHANGELOG_TYPE_COLOR[c.type], borderColor: CHANGELOG_TYPE_COLOR[c.type] + '55' }}
+                      >{c.type_label}</span>
+                      <span className="lp-info-text">{c.title}</span>
+                      <span className="lp-info-date">
+                        {new Date(c.released_at).toLocaleDateString('ja-JP', { month: '2-digit', day: '2-digit' })}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </section>
+      )}
 
       {/* フッター */}
       <footer className="lp-footer">

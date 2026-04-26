@@ -2324,6 +2324,95 @@ button { font-family: inherit; }
   color: var(--lc-color, var(--text));
 }
 
+/* ── ポータル お知らせ・変更履歴 ── */
+.lp-info {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto 48px;
+  padding: 0 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.lp-info-col {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.lp-info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.lp-info-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.lp-info-more {
+  font-size: 0.75rem;
+  color: #58a6ff;
+  text-decoration: none;
+}
+.lp-info-more:hover { text-decoration: underline; }
+.lp-info-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.lp-info-item {
+  border-bottom: 1px solid var(--border);
+}
+.lp-info-item:last-child { border-bottom: none; }
+.lp-info-link {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 16px;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.lp-info-link:hover { background: var(--bg-hover); }
+.lp-info-pin { font-size: 0.75rem; }
+.lp-info-badge {
+  font-size: 0.68rem;
+  padding: 1px 7px;
+  border: 1px solid;
+  border-radius: 10px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.lp-info-version {
+  font-size: 0.72rem;
+  font-family: monospace;
+  color: var(--text-dim);
+  background: var(--bg-hover);
+  padding: 1px 7px;
+  border-radius: 5px;
+  flex-shrink: 0;
+}
+.lp-info-text {
+  font-size: 0.83rem;
+  color: var(--text);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lp-info-date {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+@media (max-width: 640px) {
+  .lp-info { padding: 0 16px; }
+}
+
 /* ── フッター ── */
 .lp-footer {
   position: relative;

@@ -23,7 +23,8 @@ import HomePage      from './pages/HomePage';
 import StockPage     from './pages/StockPage';
 import LoginPage     from './pages/LoginPage';
 import RegisterPage  from './pages/RegisterPage';
-import PortfolioPage from './pages/PortfolioPage';
+import PortfolioPage   from './pages/PortfolioPage';
+import WatchlistPage   from './pages/WatchlistPage';
 
 // TechBlog pages
 import TechlogListPage   from './pages/techlog/TechlogListPage';
@@ -79,12 +80,20 @@ function AuthControl() {
     return (
       <div className="auth-control">
         {!isTechlog && (
-          <NavLink
-            to="/portfolio"
-            className={({ isActive }) => `auth-nav-link pf-nav-link ${isActive ? 'active' : ''}`}
-          >
-            ポートフォリオ
-          </NavLink>
+          <>
+            <NavLink
+              to="/portfolio"
+              className={({ isActive }) => `auth-nav-link pf-nav-link ${isActive ? 'active' : ''}`}
+            >
+              ポートフォリオ
+            </NavLink>
+            <NavLink
+              to="/watchlist"
+              className={({ isActive }) => `auth-nav-link pf-nav-link ${isActive ? 'active' : ''}`}
+            >
+              ウォッチリスト
+            </NavLink>
+          </>
         )}
         {isTechlog && (
           <NavLink
@@ -180,6 +189,7 @@ function InnerRoutes() {
         <Route path="/ir"            element={<HomePage />} />
         <Route path="/stock/:code"   element={<StockPage />} />
         <Route path="/portfolio"     element={<PortfolioPage />} />
+        <Route path="/watchlist"     element={<WatchlistPage />} />
         <Route path="/login"         element={<LoginPage />} />
         <Route path="/register"      element={<RegisterPage />} />
 

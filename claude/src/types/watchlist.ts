@@ -14,6 +14,8 @@ export interface WatchlistItem {
   id: number;
   company_code: string;
   company_name: string;
+  company_industry: string | null;
+  company_dividend: number | null;
   target_price: number;
   current_price: number | null;
   price_diff_pct: number | null;

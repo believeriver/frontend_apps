@@ -705,7 +705,16 @@ button { font-family: inherit; }
   flex-shrink: 0;
 }
 .wl-item-info { display: flex; flex-direction: column; gap: 2px; }
+.wl-item-code-row { display: flex; align-items: center; gap: 6px; }
 .wl-item-code { font-size: 0.75rem; color: var(--text-dim); font-family: monospace; }
+.wl-item-industry {
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1px 7px;
+}
 .wl-item-name {
   font-size: 0.9rem;
   font-weight: 600;
@@ -714,6 +723,12 @@ button { font-family: inherit; }
   transition: color 0.15s;
 }
 .wl-item-name:hover { color: var(--accent); text-decoration: underline; }
+.wl-item-sub-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.wl-item-dividend {
+  font-size: 0.75rem;
+  color: #3fb950;
+  font-weight: 600;
+}
 .wl-item-memo { font-size: 0.75rem; color: var(--text-dim); }
 
 /* 価格エリア */

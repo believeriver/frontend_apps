@@ -160,9 +160,19 @@ function ItemRow({
           {meta.icon}
         </span>
         <div className="wl-item-info">
-          <span className="wl-item-code">{item.company_code}</span>
+          <div className="wl-item-code-row">
+            <span className="wl-item-code">{item.company_code}</span>
+            {item.company_industry && (
+              <span className="wl-item-industry">{item.company_industry}</span>
+            )}
+          </div>
           <Link to={`/stock/${item.company_code}`} className="wl-item-name">{item.company_name}</Link>
-          {item.memo && <span className="wl-item-memo">{item.memo}</span>}
+          <div className="wl-item-sub-row">
+            {item.company_dividend != null && (
+              <span className="wl-item-dividend">配当 {item.company_dividend.toFixed(2)}%</span>
+            )}
+            {item.memo && <span className="wl-item-memo">{item.memo}</span>}
+          </div>
         </div>
       </div>
 

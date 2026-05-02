@@ -504,7 +504,9 @@ export default function WatchlistPage() {
               {selected.items.length === 0 ? (
                 <p className="wl-empty-hint">銘柄を追加してください。</p>
               ) : (
-                selected.items.map(item => (
+                [...selected.items]
+                  .sort((a, b) => (b.company_dividend ?? -Infinity) - (a.company_dividend ?? -Infinity))
+                  .map(item => (
                   <ItemRow
                     key={item.id}
                     item={item}

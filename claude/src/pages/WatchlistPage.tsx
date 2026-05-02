@@ -198,12 +198,29 @@ function ItemRow({
         </div>
         {diffPct != null && (
           <div className="wl-price-row">
-            <span className="wl-price-label">乖離</span>
+            <span className="wl-price-label">目標比</span>
             <span
               className="wl-price-diff"
               style={{ color: diffPct < -10 ? meta.color : diffPct > 0 ? '#3fb950' : '#8b949e' }}
             >
               {diffSign}{diffPct.toFixed(1)}%
+            </span>
+          </div>
+        )}
+        {item.high_price_1y != null && (
+          <div className="wl-price-row wl-price-row-sep">
+            <span className="wl-price-label">1年高値</span>
+            <span className="wl-price-value">¥{item.high_price_1y.toLocaleString()}</span>
+          </div>
+        )}
+        {item.high_diff_pct != null && (
+          <div className="wl-price-row">
+            <span className="wl-price-label">高値比</span>
+            <span
+              className="wl-price-diff"
+              style={{ color: ALERT_META[item.high_alert_status].color }}
+            >
+              {item.high_diff_pct > 0 ? '+' : ''}{item.high_diff_pct.toFixed(1)}%
             </span>
           </div>
         )}
@@ -358,7 +375,9 @@ export default function WatchlistPage() {
 
   if (loading) return <div className="page-center"><div className="spinner" /></div>;
 
-  const alertItems = selected?.items.filter(i => i.alert_status !== 'none') ?? [];
+  const alertItems = selected?.items.filter(
+    i => i.alert_status !== 'none' || i.high_alert_status !== 'none'
+  ) ?? [];
 
   return (
     <div className="wl-page">
@@ -440,17 +459,20 @@ export default function WatchlistPage() {
                 <div className="wl-alert-summary">
                   {alertItems.map(item => (
                     <div key={item.id} className="wl-alert-row">
-                      <span
-                        className="wl-alert-dot"
-                        style={{ color: ALERT_META[item.alert_status].color }}
-                      >
-                        {ALERT_META[item.alert_status].icon}
-                      </span>
                       <span className="wl-alert-row-name">{item.company_name}</span>
-                      <span className="wl-alert-row-label" style={{ color: ALERT_META[item.alert_status].color }}>
-                        {item.alert_label}
-                        {item.price_diff_pct != null && ` (${item.price_diff_pct.toFixed(1)}%)`}
-                      </span>
+                      <div className="wl-alert-row-badges">
+                        {item.alert_status !== 'none' && (
+                          <span className="wl-alert-tag" style={{ color: ALERT_META[item.alert_status].color, borderColor: ALERT_META[item.alert_status].color + '55' }}>
+                            {ALERT_META[item.alert_status].icon} 目標比 {item.price_diff_pct?.toFixed(1)}%
+                          </span>
+                        )}
+                        {item.high_alert_status !== 'none' && (
+                          <span className="wl-alert-tag" style={{ color: ALERT_META[item.high_alert_status].color, borderColor: ALERT_META[item.high_alert_status].color + '55' }}>
+                            {ALERT_META[item.high_alert_status].icon} 高値比 {item.high_diff_pct?.toFixed(1)}%
+                            {item.high_price_1y_at && <span className="wl-alert-tag-date">（{item.high_price_1y_at}）</span>}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>

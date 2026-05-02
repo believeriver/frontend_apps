@@ -21,6 +21,11 @@ export interface WatchlistItem {
   price_diff_pct: number | null;
   alert_status: AlertStatus;
   alert_label: string;
+  high_price_1y: number | null;
+  high_price_1y_at: string | null;
+  high_diff_pct: number | null;
+  high_alert_status: AlertStatus;
+  high_alert_label: string;
   memo: string;
   created_at: string;
   updated_at: string;

@@ -166,7 +166,12 @@ function ItemRow({
               <span className="wl-item-industry">{item.company_industry}</span>
             )}
           </div>
-          <Link to={`/stock/${item.company_code}`} className="wl-item-name">{item.company_name}</Link>
+          <a
+            href={`/stock/${item.company_code}`}
+            className="wl-item-name"
+            target="_blank"
+            rel="noopener noreferrer"
+          >{item.company_name}</a>
           <div className="wl-item-sub-row">
             {item.company_dividend != null && (
               <span className="wl-item-dividend">配当 {item.company_dividend.toFixed(2)}%</span>

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../../store';
 import { deletePosition, loadPortfolio } from '../../store/portfolioSlice';
@@ -24,7 +23,6 @@ function fmt(n: number, dec = 0) {
 }
 
 export default function HoldingsTable({ dashboard, items, currentPrices }: Props) {
-  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { mutating } = useSelector((s: RootState) => s.portfolio);
 
@@ -86,10 +84,15 @@ export default function HoldingsTable({ dashboard, items, currentPrices }: Props
             </button>
           </td>
           <td className="td-name">
-            <span className="pf-name-link" onClick={() => navigate(`/stock/${d.company_code}`)}>
+            <a
+              className="pf-name-link"
+              href={`/stock/${d.company_code}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <span className="td-code" style={{ marginRight: 8 }}>{d.company_code}</span>
               {d.company_name}
-            </span>
+            </a>
           </td>
           <td>
             {(() => {

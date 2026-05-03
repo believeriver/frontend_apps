@@ -7,7 +7,7 @@ import { register, clearError } from '../store/authSlice';
 export default function RegisterPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error, accessToken } = useSelector((s: RootState) => s.auth);
+  const { loading, error, accessToken, isSuperuser } = useSelector((s: RootState) => s.auth);
 
   const [email,     setEmail]     = useState('');
   const [password,  setPassword]  = useState('');
@@ -15,8 +15,9 @@ export default function RegisterPage() {
   const [done,      setDone]      = useState(false);
 
   useEffect(() => {
-    if (accessToken) navigate('/', { replace: true });
-  }, [accessToken, navigate]);
+    // 管理者はログイン中でも登録ページを開けるようにする
+    if (accessToken && !isSuperuser) navigate('/', { replace: true });
+  }, [accessToken, isSuperuser, navigate]);
 
   useEffect(() => {
     dispatch(clearError());
@@ -50,10 +51,17 @@ export default function RegisterPage() {
           <div className="auth-success">
             <span className="auth-success-icon">✓</span>
             <h2>登録が完了しました</h2>
-            <p>登録したメールアドレスとパスワードでログインしてください。</p>
-            <Link to="/login" className="auth-btn" style={{ display: 'block', textAlign: 'center', marginTop: 16 }}>
-              ログインページへ
-            </Link>
+            <p>登録したメールアドレスとパスワードでログインできます。</p>
+            {isSuperuser ? (
+              <button className="auth-btn" style={{ display: 'block', width: '100%', marginTop: 16 }}
+                onClick={() => { setDone(false); setEmail(''); setPassword(''); setPassword2(''); }}>
+                続けて登録する
+              </button>
+            ) : (
+              <Link to="/login" className="auth-btn" style={{ display: 'block', textAlign: 'center', marginTop: 16 }}>
+                ログインページへ
+              </Link>
+            )}
           </div>
         </div>
       </div>

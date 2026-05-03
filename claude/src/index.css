@@ -3184,9 +3184,10 @@ button { font-family: inherit; }
 .settings-page {
   position: relative;
   z-index: 10;
-  max-width: 560px;
+  width: 90%;
+  max-width: 720px;
   margin: 48px auto 64px;
-  padding: 0 24px;
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -3195,20 +3196,20 @@ button { font-family: inherit; }
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 24px;
+  padding: 32px;
 }
 .settings-section-title {
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 700;
   color: var(--text);
-  margin-bottom: 20px;
-  padding-bottom: 12px;
+  margin-bottom: 24px;
+  padding-bottom: 14px;
   border-bottom: 1px solid var(--border);
 }
 .settings-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 .settings-field {
   display: flex;
@@ -3216,7 +3217,7 @@ button { font-family: inherit; }
   gap: 6px;
 }
 .settings-label {
-  font-size: 0.82rem;
+  font-size: 0.88rem;
   color: var(--text-muted);
   font-weight: 500;
 }
@@ -3224,9 +3225,9 @@ button { font-family: inherit; }
   background: var(--bg-hover);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 10px 14px;
+  padding: 11px 16px;
   color: var(--text);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-family: inherit;
   transition: border-color 0.2s;
 }
@@ -3239,12 +3240,12 @@ button { font-family: inherit; }
   justify-content: flex-end;
 }
 .settings-btn {
-  padding: 9px 24px;
+  padding: 11px 28px;
   background: #58a6ff;
   color: #0d1117;
   border: none;
   border-radius: 8px;
-  font-size: 0.88rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;

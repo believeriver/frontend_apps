@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, NavLink, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { store, RootState, AppDispatch } from './store';
 import { restoreSession, logout } from './store/authSlice';
@@ -68,7 +68,7 @@ function AuthControl() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const location = useLocation();
-  const { email, accessToken } = useSelector((s: RootState) => s.auth);
+  const { email, accessToken, isSuperuser } = useSelector((s: RootState) => s.auth);
   const isTechlog = location.pathname.startsWith('/techlog');
 
   const handleLogout = async () => {
@@ -103,6 +103,9 @@ function AuthControl() {
             マイ記事
           </NavLink>
         )}
+        {isSuperuser && (
+          <Link to="/register" className="auth-nav-btn">ユーザ登録</Link>
+        )}
         <span className="auth-user">{email ?? 'ログイン中'}</span>
         <button className="auth-logout-btn" onClick={handleLogout}>ログアウト</button>
       </div>
@@ -111,8 +114,7 @@ function AuthControl() {
 
   return (
     <div className="auth-control">
-      <Link to="/login"    className="auth-nav-link">ログイン</Link>
-      <Link to="/register" className="auth-nav-btn">新規登録</Link>
+      <Link to="/login" className="auth-nav-link">ログイン</Link>
     </div>
   );
 }
@@ -163,6 +165,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 function InnerRoutes() {
   const location = useLocation();
   const isLanding = location.pathname === '/';
+  const isSuperuserCheck = useSelector((s: RootState) => s.auth.isSuperuser);
 
   const isLegalPage = ['/disclaimer', '/privacy', '/contact', '/contact/manage', '/profile', '/settings', '/announce', '/announce/manage'].includes(location.pathname);
 
@@ -191,7 +194,7 @@ function InnerRoutes() {
         <Route path="/portfolio"     element={<PortfolioPage />} />
         <Route path="/watchlist"     element={<WatchlistPage />} />
         <Route path="/login"         element={<LoginPage />} />
-        <Route path="/register"      element={<RegisterPage />} />
+        <Route path="/register"      element={isSuperuserCheck ? <RegisterPage /> : <Navigate to="/login" replace />} />
 
         {/* TechBlog */}
         <Route path="/techlog"            element={<TechlogListPage />} />

@@ -121,15 +121,15 @@ export default function LandingPage() {
           )}
           {accessToken ? (
             <>
+              {isSuperuser && (
+                <Link to="/register" className="lp-nav-login">ユーザ登録</Link>
+              )}
               <span className="lp-nav-user">{email ?? 'ログイン中'}</span>
               <Link to="/settings" className="lp-nav-login">設定</Link>
               <button className="lp-nav-logout" onClick={handleLogout}>ログアウト</button>
             </>
           ) : (
-            <>
-              <Link to="/login"    className="lp-nav-login">ログイン</Link>
-              <Link to="/register" className="lp-nav-register">新規登録</Link>
-            </>
+            <Link to="/login" className="lp-nav-login">ログイン</Link>
           )}
         </div>
       </nav>

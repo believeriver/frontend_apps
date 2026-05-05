@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../store';
+import CompanyDetailModal from '../components/CompanyDetailModal';
 import {
   apiGetWatchlists, apiGetWatchlist, apiCreateWatchlist,
   apiUpdateWatchlist, apiDeleteWatchlist,
@@ -125,6 +126,7 @@ function ItemRow({
   const [memo,        setMemo]        = useState(item.memo);
   const [saving,      setSaving]      = useState(false);
 
+  const [showDetail, setShowDetail] = useState(false);
   const meta = ALERT_META[item.alert_status];
   const diffPct = item.price_diff_pct;
   const diffSign = diffPct != null && diffPct > 0 ? '+' : '';
@@ -151,6 +153,9 @@ function ItemRow({
 
   return (
     <div className={`wl-item-row ${item.alert_status !== 'none' ? 'wl-item-alert' : ''}`}>
+      {showDetail && (
+        <CompanyDetailModal code={item.company_code} name={item.company_name} onClose={() => setShowDetail(false)} />
+      )}
       <div className="wl-item-left">
         <span
           className="wl-alert-badge"
@@ -247,6 +252,7 @@ function ItemRow({
           </>
         ) : (
           <>
+            <button className="cdm-open-btn" onClick={() => setShowDetail(true)}>企業詳細</button>
             <button className="wl-edit-btn" onClick={() => setEditing(true)}>編集</button>
             <button className="wl-del-btn" onClick={handleDelete}>削除</button>
           </>

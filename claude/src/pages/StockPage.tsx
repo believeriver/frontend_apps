@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store';
@@ -8,10 +8,12 @@ import StockHeader from '../components/StockHeader';
 import StockChart from '../components/StockChart';
 import FinancialCharts from '../components/FinancialCharts';
 import FinancialTable from '../components/FinancialTable';
+import CompanyDetailModal from '../components/CompanyDetailModal';
 
 export default function StockPage() {
   const { code } = useParams<{ code: string }>();
   const dispatch = useDispatch<AppDispatch>();
+  const [showDetail, setShowDetail] = useState(false);
 
   const { history, loading: stockLoading, error: stockError } = useSelector(
     (s: RootState) => s.stock
@@ -60,10 +62,17 @@ export default function StockPage() {
       {/* 株価ヘッダー */}
       <StockHeader history={history} company={company} />
 
+      {showDetail && code && (
+        <CompanyDetailModal code={code} name={company.name} onClose={() => setShowDetail(false)} />
+      )}
+
       {/* ── 企業情報（チャートの上） ── */}
       {info && (info.description || info.per || info.pbr || info.psr) && (
         <section className="section company-info-section">
-          <h2 className="section-title">企業情報</h2>
+          <div className="section-title-row">
+            <h2 className="section-title">企業情報</h2>
+            <button className="cdm-open-btn" onClick={() => setShowDetail(true)}>企業詳細</button>
+          </div>
           <div className="company-info-body">
             {/* 指標バッジ行 */}
             <div className="company-kpi-row">

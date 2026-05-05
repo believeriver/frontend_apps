@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useCallback } from 'react';
+import { useEffect, useMemo, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import CompanyDetailModal from '../components/CompanyDetailModal';
 import { RootState, AppDispatch } from '../store';
 import {
   loadCompanyList,
@@ -43,6 +44,7 @@ const COLUMNS: { key: SortKey; label: string; align?: 'left' }[] = [
 export default function HomePage() {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
+  const [detailTarget, setDetailTarget] = useState<{ code: string; name: string } | null>(null);
   const { items, loading, error, search, sortKey, sortDir, page } = useSelector(
     (s: RootState) => s.companyList
   );
@@ -85,6 +87,13 @@ export default function HomePage() {
 
   return (
     <div className="home-page-list">
+      {detailTarget && (
+        <CompanyDetailModal
+          code={detailTarget.code}
+          name={detailTarget.name}
+          onClose={() => setDetailTarget(null)}
+        />
+      )}
       {/* ヘッダー */}
       <div className="list-header">
         <div>
@@ -139,7 +148,15 @@ export default function HomePage() {
                     ) : '—'}
                   </td>
                   <td className="td-code">{c.code}</td>
-                  <td className="td-name">{c.name}</td>
+                  <td className="td-name">
+                    <div className="pf-name-cell">
+                      <span>{c.name}</span>
+                      <button
+                        className="cdm-open-btn"
+                        onClick={e => { e.stopPropagation(); setDetailTarget({ code: c.code, name: c.name }); }}
+                      >企業詳細</button>
+                    </div>
+                  </td>
                   <td className="td-price">{price.toLocaleString('ja-JP')}</td>
                   <td className="td-dividend">
                     {c.dividend != null ? (

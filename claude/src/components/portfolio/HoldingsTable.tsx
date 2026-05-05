@@ -4,6 +4,7 @@ import { RootState, AppDispatch } from '../../store';
 import { deletePosition, loadPortfolio } from '../../store/portfolioSlice';
 import { DashboardItem, PortfolioItem, PortfolioRecord } from '../../types';
 import PositionModal from './PositionModal';
+import CompanyDetailModal from '../CompanyDetailModal';
 import { getCategory, CATEGORY_META } from '../../utils/stockCategory';
 
 const ACCOUNT_LABEL: Record<string, string> = {
@@ -29,6 +30,7 @@ export default function HoldingsTable({ dashboard, items, currentPrices }: Props
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [editTarget, setEditTarget] = useState<{ companyCode: string; record: PortfolioRecord } | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: number; name: string } | null>(null);
+  const [detailTarget, setDetailTarget] = useState<{ code: string; name: string } | null>(null);
 
   const toggleExpand = (code: string) => {
     setExpanded((prev) => {
@@ -84,15 +86,21 @@ export default function HoldingsTable({ dashboard, items, currentPrices }: Props
             </button>
           </td>
           <td className="td-name">
-            <a
-              className="pf-name-link"
-              href={`/stock/${d.company_code}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span className="td-code" style={{ marginRight: 8 }}>{d.company_code}</span>
-              {d.company_name}
-            </a>
+            <div className="pf-name-cell">
+              <a
+                className="pf-name-link"
+                href={`/stock/${d.company_code}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span className="td-code" style={{ marginRight: 8 }}>{d.company_code}</span>
+                {d.company_name}
+              </a>
+              <button
+                className="cdm-open-btn"
+                onClick={e => { e.stopPropagation(); setDetailTarget({ code: d.company_code, name: d.company_name }); }}
+              >企業詳細</button>
+            </div>
           </td>
           <td>
             {(() => {
@@ -177,6 +185,13 @@ export default function HoldingsTable({ dashboard, items, currentPrices }: Props
 
   return (
     <>
+      {detailTarget && (
+        <CompanyDetailModal
+          code={detailTarget.code}
+          name={detailTarget.name}
+          onClose={() => setDetailTarget(null)}
+        />
+      )}
       <div className="table-scroll">
         <table className="list-table pf-table">
           <thead>

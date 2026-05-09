@@ -25,6 +25,7 @@ import LoginPage     from './pages/LoginPage';
 import RegisterPage  from './pages/RegisterPage';
 import PortfolioPage   from './pages/PortfolioPage';
 import WatchlistPage   from './pages/WatchlistPage';
+import ScreeningPage   from './pages/ScreeningPage';
 
 // TechBlog pages
 import TechlogListPage   from './pages/techlog/TechlogListPage';
@@ -49,13 +50,15 @@ function AppSwitcher() {
   const isTechlog   = location.pathname.startsWith('/techlog');
   const isBlog      = location.pathname.startsWith('/blog');
   const isAnalytics = location.pathname.startsWith('/analytics');
-  const isIR        = !isTechlog && !isBlog && !isAnalytics;
+  const isScreening = location.pathname.startsWith('/screening');
+  const isIR        = !isTechlog && !isBlog && !isAnalytics && !isScreening;
   const { isSuperuser } = useSelector((s: RootState) => s.auth);
   return (
     <div className="app-switcher">
-      <NavLink to="/ir"      className={`app-tab ${isIR        ? 'active' : ''}`}>📈 IR</NavLink>
-      <NavLink to="/techlog" className={`app-tab ${isTechlog   ? 'active' : ''}`}>✍️ Tech</NavLink>
-      <NavLink to="/blog"    className={`app-tab ${isBlog      ? 'active' : ''}`}>📝 Blog</NavLink>
+      <NavLink to="/ir"        className={`app-tab ${isIR        ? 'active' : ''}`}>📈 IR</NavLink>
+      <NavLink to="/screening" className={`app-tab ${isScreening ? 'active' : ''}`}>🔍 スクリーニング</NavLink>
+      <NavLink to="/techlog"   className={`app-tab ${isTechlog   ? 'active' : ''}`}>✍️ Tech</NavLink>
+      <NavLink to="/blog"      className={`app-tab ${isBlog      ? 'active' : ''}`}>📝 Blog</NavLink>
       {isSuperuser && (
         <NavLink to="/analytics" className={`app-tab ${isAnalytics ? 'active' : ''}`}>📊 Analytics</NavLink>
       )}
@@ -132,9 +135,10 @@ function ThemeToggle() {
 // ── レイアウト ────────────────────────────────────────────
 function Layout({ children }: { children: React.ReactNode }) {
   const location  = useLocation();
-  const isTechlog = location.pathname.startsWith('/techlog');
-  const isBlog    = location.pathname.startsWith('/blog');
-  const isIR      = !isTechlog && !isBlog && !location.pathname.startsWith('/analytics');
+  const isTechlog   = location.pathname.startsWith('/techlog');
+  const isBlog      = location.pathname.startsWith('/blog');
+  const isScreening = location.pathname.startsWith('/screening');
+  const isIR        = !isTechlog && !isBlog && !location.pathname.startsWith('/analytics') && !isScreening;
   const isEditor  = location.pathname.includes('/new') || location.pathname.includes('/edit');
 
   return (
@@ -193,6 +197,7 @@ function InnerRoutes() {
         <Route path="/stock/:code"   element={<StockPage />} />
         <Route path="/portfolio"     element={<PortfolioPage />} />
         <Route path="/watchlist"     element={<WatchlistPage />} />
+        <Route path="/screening"     element={<ScreeningPage />} />
         <Route path="/login"         element={<LoginPage />} />
         <Route path="/register"      element={isSuperuserCheck ? <RegisterPage /> : <Navigate to="/login" replace />} />
 

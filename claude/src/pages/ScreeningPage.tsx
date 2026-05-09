@@ -4,6 +4,7 @@ import type { RootState } from '../store';
 import { apiGetScreening, apiRefreshScreening } from '../api/screening';
 import type { ScreeningItem, ScreeningParams, ScreeningDetails } from '../types/screening';
 import CompanyDetailModal from '../components/CompanyDetailModal';
+import ScreeningInfoModal from '../components/ScreeningInfoModal';
 
 const MAX_SCORE = 110;
 const PAGE_SIZE = 50;
@@ -59,10 +60,10 @@ export default function ScreeningPage() {
   const { accessToken, isSuperuser } = useSelector((s: RootState) => s.auth);
 
   // フィルタ状態
-  const [dividendMin,   setDividendMin]   = useState('');
+  const [dividendMin,   setDividendMin]   = useState('3');
   const [marginMin,     setMarginMin]     = useState('');
   const [equityMin,     setEquityMin]     = useState('');
-  const [minYears,      setMinYears]      = useState('');
+  const [minYears,      setMinYears]      = useState('10');
   const [scoreMin,      setScoreMin]      = useState('50');
   const [excludeReit,   setExcludeReit]   = useState(true);
   const [sortBy,        setSortBy]        = useState<'score' | 'dividend'>('score');
@@ -78,6 +79,7 @@ export default function ScreeningPage() {
 
   // モーダル
   const [detailTarget, setDetailTarget] = useState<{ code: string; name: string } | null>(null);
+  const [showInfo,     setShowInfo]     = useState(false);
 
   const fetch = useCallback(async () => {
     setLoading(true);
@@ -129,6 +131,7 @@ export default function ScreeningPage() {
 
   return (
     <div className="scr-page">
+      {showInfo && <ScreeningInfoModal onClose={() => setShowInfo(false)} />}
       {detailTarget && (
         <CompanyDetailModal
           code={detailTarget.code}
@@ -140,7 +143,10 @@ export default function ScreeningPage() {
       {/* ── ヘッダー ── */}
       <div className="scr-header">
         <div>
-          <h1 className="scr-title">財務スクリーニング</h1>
+          <div className="scr-title-row">
+            <h1 className="scr-title">財務スクリーニング</h1>
+            <button className="scr-info-btn" onClick={() => setShowInfo(true)} title="ロジックを確認">？</button>
+          </div>
           <p className="scr-sub">最終更新: {fmtDate(refreshedAt)}</p>
         </div>
         {isSuperuser && (

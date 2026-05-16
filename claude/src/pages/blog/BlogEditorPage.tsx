@@ -88,8 +88,8 @@ export default function BlogEditorPage() {
     }
     setImgUploading(true);
     try {
-      const { url } = await apiUploadBlogImage(uuid, file, accessToken);
-      const markdown = `![${file.name}](${url})`;
+      const { image_url } = await apiUploadBlogImage(uuid, file, accessToken);
+      const markdown = `![${file.name}](${image_url})`;
       const ta = textareaRef.current;
       if (ta) {
         const start = ta.selectionStart;

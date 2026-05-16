@@ -53,10 +53,10 @@ export const apiUpdateBlogPost = (uuid: string, body: Partial<BlogPostInput>, to
 export const apiDeleteBlogPost = (uuid: string, token: string): Promise<void> =>
   client(token).delete(`/posts/${uuid}/`).then(() => undefined);
 
-export const apiUploadBlogImage = (uuid: string, file: File, token: string): Promise<{ url: string }> => {
+export const apiUploadBlogImage = (uuid: string, file: File, token: string): Promise<{ image_url: string }> => {
   const form = new FormData();
   form.append('image', file);
-  return client(token).post<{ url: string }>(`/posts/${uuid}/images/`, form).then(r => r.data);
+  return client(token).post<{ image_url: string }>(`/posts/${uuid}/images/`, form).then(r => r.data);
 };
 
 export const apiUploadBlogThumbnail = (uuid: string, file: File, token: string): Promise<{ thumbnail_url: string }> => {
